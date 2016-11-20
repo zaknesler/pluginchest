@@ -6,6 +6,7 @@ use App\Plugin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Plugins\CreatePluginFormRequest;
+use App\Http\Requests\Plugins\UpdatePluginFormRequest;
 
 class PluginController extends Controller
 {
@@ -97,19 +98,25 @@ class PluginController extends Controller
      */
     public function edit(Plugin $plugin)
     {
-        //
+        return view('plugins.edit')
+            ->with('plugin', $plugin);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\Plugins\UpdatePluginFormRequest  $request
      * @param  App\Plugin  $plugin
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Plugin $plugin)
+    public function update(UpdatePluginFormRequest $request, Plugin $plugin)
     {
-        //
+        $plugin->update([
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+        ]);
+
+        return redirect()->route('plugins.show', [$plugin->slug, $plugin->id]);
     }
 
     /**

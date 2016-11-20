@@ -30,6 +30,10 @@
                             <a href="{{ route('plugins.files.index', $plugin->id) }}" class="list-group-item">
                                 View Files
                             </a>
+
+                            <a href="{{ route('plugins.edit', $plugin->id) }}" class="list-group-item">
+                                Edit Plugin
+                            </a>
                         </ul>
                     </div>
                 </div>

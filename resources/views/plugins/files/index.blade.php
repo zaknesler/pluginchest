@@ -25,7 +25,7 @@
                                         </a>
 
                                         <p>
-                                            {{ number_format($file->downloads_count) }} {{ str_plural('downloads', $file->downloads_count) }}
+                                            {{ number_format($file->downloads_count) }} {{ str_plural('download', $file->downloads_count) }}
                                         </p>
                                     </li>
                                 @endforeach

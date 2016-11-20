@@ -39,6 +39,12 @@ class PluginFile extends Model
         'approved_at',
     ];
 
+    /**
+     * Scope a query to only include plugin files that have a value in the 'file' column.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeHasFile($query)
     {
         return $query->whereNotNull('file');
