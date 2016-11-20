@@ -1,0 +1,18 @@
+// Variables
+@import "variables";
+
+// Bootstrap
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+
+textarea {
+    resize: vertical;
+}
+
+dl.with-space dd {
+    margin-left: 30px;
+    margin-bottom: 5px;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
