@@ -11,11 +11,11 @@
         <div class="row">
             <div class="col-md-8">
                 <div class="panel panel-default">
-                    <div class="panel-heading">
-                        @can('createPluginFile', $plugin)
+                    @can('createPluginFile', $plugin)
+                        <div class="panel-heading">
                             <a href="{{ route('plugins.files.create', $plugin->id) }}">Create File</a>
-                        @endcan
-                    </div>
+                        </div>
+                    @endcan
 
                     <div class="panel-body">
                         @if ($files->count())
