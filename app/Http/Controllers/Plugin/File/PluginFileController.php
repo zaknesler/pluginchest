@@ -36,7 +36,7 @@ class PluginFileController extends Controller
      */
     public function index(Plugin $plugin)
     {
-        $files = $plugin->files()->hasFile()->get();
+        $files = $plugin->files()->hasFile()->latest()->get();
 
         return view('plugins.files.index')
             ->with('plugin', $plugin)
@@ -72,7 +72,7 @@ class PluginFileController extends Controller
         ]);
 
         $request->file('file')->move(
-            storage_path() . '\\local-plugin-files',
+            config('filesystems.disks.local-plugin-files.root'),
             $fileId = uniqid(true)
         );
 

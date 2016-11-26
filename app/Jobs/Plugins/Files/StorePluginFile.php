@@ -38,7 +38,7 @@ class StorePluginFile implements ShouldQueue
     public function handle()
     {
         $fileName = $this->fileId . '.jar';
-        $filePath = storage_path() . '\\local-plugin-files\\' . $this->fileId;
+        $filePath = config('filesystems.disks.local-plugin-files.root') . '/' . $this->fileId;
 
         if (Storage::disk('s3-plugin-files')->put($fileName, $handle = fopen($filePath, 'r+'))) {
             fclose($handle);

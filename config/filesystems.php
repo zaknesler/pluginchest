@@ -64,7 +64,7 @@ return [
 
         'local-plugin-files' => [
             'driver' => 'local',
-            'root' => storage_path('app\local-plugin-files'),
+            'root' => storage_path('app/local-plugin-files'),
         ],
 
         's3-plugin-files' => [
