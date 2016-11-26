@@ -65,6 +65,7 @@ class PluginFileController extends Controller
     public function store(CreateFileFormRequest $request, Plugin $plugin)
     {
         $file = $plugin->files()->create([
+            'user_id' => $request->user()->id,
             'name' => $request->input('name'),
             'summary' => $request->input('summary'),
             'stage' => $request->input('stage'),
@@ -78,7 +79,7 @@ class PluginFileController extends Controller
 
         $this->dispatch(new StorePluginFile($file, $fileId));
 
-        flash('Your file has been uploaded. It will not be displayed to the public until it is approved by a moderator.');
+        flash('Your file has been added. Please allow some time for it to finish uploading.');
 
         return redirect()->route('plugins.show', [
             $plugin->slug,
@@ -143,6 +144,8 @@ class PluginFileController extends Controller
         }
 
         $this->dispatch(new DeletePluginFile($pluginFile));
+
+        flash('File has been deleted.');
 
         return redirect()->route('plugins.show', [$plugin->slug, $plugin->id]);
     }

@@ -11,7 +11,9 @@
                         </span>
 
                         <span class="pull-right">
-                            <a href="{{ route('plugins.create') }}">Create Plugin</a>
+                            @can('create', \App\Plugin::class)
+                                <a href="{{ route('plugins.create') }}">Create Plugin</a>
+                            @endcan
                         </span>
                     </div>
 

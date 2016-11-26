@@ -22,7 +22,7 @@
             <div class="col-md-4">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        Plugin Management
+                        Plugin Actions
                     </div>
 
                     <div class="panel-body">
@@ -31,9 +31,11 @@
                                 View Files
                             </a>
 
-                            <a href="{{ route('plugins.edit', $plugin->id) }}" class="list-group-item">
-                                Edit Plugin
-                            </a>
+                            @can('update', $plugin)
+                                <a href="{{ route('plugins.edit', $plugin->id) }}" class="list-group-item">
+                                    Edit Plugin
+                                </a>
+                            @endcan
                         </ul>
                     </div>
                 </div>
@@ -75,9 +77,11 @@
                                 </a>
                             @endif
 
-                            <a href="{{ route('plugins.files.create', $plugin->id) }}" class="btn btn-link">
-                                Create File
-                            </a>
+                            @can('createPluginFile', $plugin)
+                                <a href="{{ route('plugins.files.create', $plugin->id) }}" class="btn btn-link">
+                                    Create File
+                                </a>
+                            @endcan
                         </div>
                     </div>
                 </div>

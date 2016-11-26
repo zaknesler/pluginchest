@@ -55,23 +55,27 @@
                     </div>
                 </div>
 
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        File Actions
+                {{ $file->user_id }}
+
+                @can('create', $file)
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            File Actions
+                        </div>
+
+                        <div class="panel-body">
+                                <form role="form" method="POST" action="{{ route('plugins.files.destroy', [$plugin->id, $file->id]) }}">
+                                    {{ csrf_field() }}
+
+                                    {{ method_field('DELETE') }}
+
+                                    <button type="submit" class="btn btn-block btn-danger">
+                                        Delete
+                                    </button>
+                                </form>
+                        </div>
                     </div>
-
-                    <div class="panel-body">
-                        <form role="form" method="POST" action="{{ route('plugins.files.destroy', [$plugin->id, $file->id]) }}">
-                            {{ csrf_field() }}
-
-                            {{ method_field('DELETE') }}
-
-                            <button type="submit" class="btn btn-block btn-danger">
-                                Delete
-                            </button>
-                        </form>
-                    </div>
-                </div>
+                @endcan
             </div>
         </div>
     </div>

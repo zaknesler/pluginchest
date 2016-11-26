@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Plugin;
+use App\PluginFile;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -80,5 +81,15 @@ class User extends Authenticatable
     public function plugins()
     {
         return $this->hasMany(Plugin::class);
+    }
+
+    /**
+     * A user has many plugin files.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function pluginFiles()
+    {
+        return $this->hasMany(PluginFile::class);
     }
 }

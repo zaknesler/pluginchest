@@ -3,6 +3,7 @@
 namespace App;
 
 use Storage;
+use App\User;
 use App\Plugin;
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,6 +22,8 @@ class PluginFile extends Model
      * @var array
      */
     protected $fillable = [
+        'user_id',
+        'plugin_id',
         'name',
         'summary',
         'downloads_count',
@@ -48,6 +51,16 @@ class PluginFile extends Model
     public function scopeHasFile($query)
     {
         return $query->whereNotNull('file');
+    }
+
+    /**
+     * A plugin file belongs to a user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     /**

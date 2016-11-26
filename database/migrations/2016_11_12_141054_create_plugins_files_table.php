@@ -16,6 +16,7 @@ class CreatePluginsFilesTable extends Migration
         Schema::create('plugins_files', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('plugin_id')->unsigned()->index();
+            $table->integer('user_id')->unsigned()->index();
             $table->string('name');
             $table->text('summary');
             $table->integer('downloads_count')->default(0);
@@ -26,6 +27,7 @@ class CreatePluginsFilesTable extends Migration
             $table->timestamps();
 
             $table->foreign('plugin_id')->references('id')->on('plugins')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

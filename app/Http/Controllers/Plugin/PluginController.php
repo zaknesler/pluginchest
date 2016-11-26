@@ -46,6 +46,8 @@ class PluginController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Plugin::class);
+
         return view('plugins.create');
     }
 
@@ -57,6 +59,8 @@ class PluginController extends Controller
      */
     public function store(CreatePluginFormRequest $request)
     {
+        $this->authorize('create', Plugin::class);
+
         $plugin = $request->user()->plugins()->create([
             'name' => $request->input('name'),
             'slug' => str_slug($request->input('name')),
@@ -98,6 +102,8 @@ class PluginController extends Controller
      */
     public function edit(Plugin $plugin)
     {
+        $this->authorize('update', $plugin);
+
         return view('plugins.edit')
             ->with('plugin', $plugin);
     }
@@ -111,6 +117,8 @@ class PluginController extends Controller
      */
     public function update(UpdatePluginFormRequest $request, Plugin $plugin)
     {
+        $this->authorize('update', $plugin);
+
         $plugin->update([
             'name' => $request->input('name'),
             'description' => $request->input('description'),
@@ -127,6 +135,6 @@ class PluginController extends Controller
      */
     public function destroy(Plugin $plugin)
     {
-        //
+        $this->authorize('delete', $plugin);
     }
 }
