@@ -43,8 +43,11 @@
                             <dt>Game Version</dt>
                             <dd>{{ $file->game_version }}</dd>
 
+                            <dt>File Size</dt>
+                            <dd>{{ $file->getFileSize() }} KB</dd>
+
                             <dt>Downloads</dt>
-                            <dd>{{ number_format($file->downloads_count) }}</dd>
+                            <dd>{{ $file->downloads_count }}</dd>
                         </dl>
 
                         <div class="text-center">

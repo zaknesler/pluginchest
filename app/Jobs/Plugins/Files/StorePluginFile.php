@@ -38,15 +38,19 @@ class StorePluginFile implements ShouldQueue
     public function handle()
     {
         $fileName = $this->fileId . '.jar';
+        $file_size = null;
         $filePath = config('filesystems.disks.local-plugin-files.root') . '/' . $this->fileId;
 
         if (Storage::disk('s3-plugin-files')->put($fileName, $handle = fopen($filePath, 'r+'))) {
             fclose($handle);
 
             File::delete($filePath);
+
+            $fileSize = Storage::disk('s3-plugin-files')->size($fileName);
         }
 
         $this->pluginFile->file = $fileName;
+        $this->pluginFile->file_size = $fileSize;
         $this->pluginFile->save();
     }
 }

@@ -47,6 +47,9 @@
 
                     <div class="panel-body">
                         <dl class="with-space">
+                            <dt>Author</dt>
+                            <dd><a href="#">{{ $plugin->user->getNameOrUsername() }}</a></dd>
+
                             <dt>Created</dt>
                             <dd>{{ $plugin->created_at->diffForHumans() }}</dd>
 

@@ -21,6 +21,7 @@ class CreatePluginsFilesTable extends Migration
             $table->text('summary');
             $table->integer('downloads_count')->default(0);
             $table->string('file')->nullable();
+            $table->string('file_size')->nullable();
             $table->string('game_version');
             $table->enum('stage', ['alpha', 'beta', 'release'])->default('alpha');
             $table->timestamp('approved_at')->nullable();

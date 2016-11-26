@@ -54,6 +54,16 @@ class PluginFile extends Model
     }
 
     /**
+     * Get the file size in kilobytes.
+     *
+     * @return integer
+     */
+    public function getFileSize()
+    {
+        return number_format($this->file_size / 1024, 1);
+    }
+
+    /**
      * A plugin file belongs to a user.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

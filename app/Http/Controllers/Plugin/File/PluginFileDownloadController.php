@@ -24,7 +24,7 @@ class PluginFileDownloadController extends Controller
 
         $response = response($file, 200, [
             'Content-Type' => 'application/java-archive',
-            'Content-Length' => Storage::disk('s3-plugin-files')->size($pluginFile->file),
+            'Content-Length' => $pluginFile->file_size,
             'Content-Description' => 'File Transfer',
             'Content-Disposition' => 'attachment; filename=' . studly_case($plugin->name) . '.jar',
             'Content-Transfer-Encoding' => 'binary',
