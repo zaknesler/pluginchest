@@ -55,9 +55,7 @@
                     </div>
                 </div>
 
-                {{ $file->user_id }}
-
-                @can('create', $file)
+                @can('delete', $file)
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             File Actions

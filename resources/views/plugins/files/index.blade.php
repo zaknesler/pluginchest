@@ -12,7 +12,9 @@
             <div class="col-md-8">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <a href="{{ route('plugins.files.create', $plugin->id) }}">Create File</a>
+                        @can('createPluginFile', $plugin)
+                            <a href="{{ route('plugins.files.create', $plugin->id) }}">Create File</a>
+                        @endcan
                     </div>
 
                     <div class="panel-body">
