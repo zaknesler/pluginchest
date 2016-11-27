@@ -43,9 +43,11 @@
                                 <label for="stage" class="control-label">Stage</label>
 
                                 <select id="stage" class="form-control" name="stage">
-                                    <option value="alpha">Alpha</option>
-                                    <option value="beta">Beta</option>
-                                    <option value="release">Release</option>
+                                    @foreach (config('pluginchest.file_stages') as $stage)
+                                        <option value="{{ $stage }}"{{ (old('stage') == $stage) ? ' selected' : '' }}>
+                                            {{ title_case($stage) }}
+                                        </option>
+                                    @endforeach
                                 </select>
 
                                 @if ($errors->has('stage'))
@@ -60,7 +62,9 @@
 
                                 <select id="game_version" class="form-control" name="game_version">
                                     @foreach (config('pluginchest.game_versions') as $version)
-                                        <option value="{{ $version }}">{{ $version }}</option>
+                                        <option value="{{ $version }}"{{ (old('game_version') == $version) ? ' selected' : '' }}>
+                                            {{ $version }}
+                                        </option>
                                     @endforeach
                                 </select>
 

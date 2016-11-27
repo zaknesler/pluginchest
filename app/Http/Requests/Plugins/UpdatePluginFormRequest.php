@@ -13,7 +13,9 @@ class UpdatePluginFormRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        $plugin = $this->route('plugin');
+
+        return $plugin && $this->user()->can('update', $plugin);
     }
 
     /**

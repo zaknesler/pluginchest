@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\Plugins\Files\StorePluginFile;
 use App\Jobs\Plugins\Files\DeletePluginFile;
 use App\Http\Requests\Plugins\Files\CreateFileFormRequest;
+use App\Http\Requests\Plugins\Files\UpdateFileFormRequest;
 
 class PluginFileController extends Controller
 {
@@ -51,6 +52,8 @@ class PluginFileController extends Controller
      */
     public function create(Plugin $plugin)
     {
+        $this->authorize('createPluginFile', $plugin);
+
         return view('plugins.files.create')
             ->with('plugin', $plugin);
     }
@@ -64,6 +67,8 @@ class PluginFileController extends Controller
      */
     public function store(CreateFileFormRequest $request, Plugin $plugin)
     {
+        $this->authorize('createPluginFile', $plugin);
+
         $file = $plugin->files()->create([
             'user_id' => $request->user()->id,
             'name' => $request->input('name'),
@@ -79,7 +84,7 @@ class PluginFileController extends Controller
 
         $this->dispatch(new StorePluginFile($file, $fileId));
 
-        flash('Your file has been added. Please allow some time for it to finish uploading.');
+        flash('File has been created. Please allow some time for it to finish uploading.');
 
         return redirect()->route('plugins.show', [
             $plugin->slug,
@@ -114,20 +119,38 @@ class PluginFileController extends Controller
      */
     public function edit(Plugin $plugin, PluginFile $pluginFile)
     {
-        //
+        $this->authorize('update', $pluginFile);
+
+        return view('plugins.files.edit')
+            ->with('plugin', $plugin)
+            ->with('file', $pluginFile);
     }
 
     /**
      * Update the specified file in the database and reupload the file if necessary.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\Plugins\Files\UpdateFileFormRequest  $request
      * @param  App\Plugin  $plugin
      * @param  App\PluginFile  $pluginFile
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Plugin $plugin, PluginFile $pluginFile)
+    public function update(UpdateFileFormRequest $request, Plugin $plugin, PluginFile $pluginFile)
     {
-        //
+        $this->authorize('update', $pluginFile);
+
+        $pluginFile->update([
+            'name' => $request->input('name'),
+            'summary' => $request->input('summary'),
+            'stage' => $request->input('stage'),
+            'game_version' => $request->input('game_version'),
+        ]);
+
+        flash('File has been updated.');
+
+        return redirect()->route('plugins.files.show', [
+            $plugin->id,
+            $pluginFile->id,
+        ]);
     }
 
     /**
@@ -139,6 +162,8 @@ class PluginFileController extends Controller
      */
     public function destroy(Plugin $plugin, PluginFile $pluginFile)
     {
+        $this->authorize('delete', $pluginFile);
+
         if ($pluginFile->plugin_id !== $plugin->id) {
             return abort(404);
         }

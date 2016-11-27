@@ -25,14 +25,22 @@
 
             <div class="col-md-4">
                 <div class="panel panel-default">
-                    <div class="panel-heading">
-                        File Information
+                    <div class="panel-heading clearfix">
+                        <div class="pull-left">
+                            File Information
+                        </div>
+
+                        @can('update', $file)
+                            <div class="pull-right">
+                                <a href="{{ route('plugins.files.edit', [$plugin->id, $file->id]) }}">Edit</a>
+                            </div>
+                        @endcan
                     </div>
 
                     <div class="panel-body">
                         <dl class="with-space">
                             <dt>Plugin</dt>
-                            <dd><a href="{{ route('plugins.show', [$plugin->slug, $plugin->id]) }}">{{ $file->plugin->name }}</a></dd>
+                            <dd><a href="{{ route('plugins.show', [$plugin->slug, $plugin->id]) }}">{{ $plugin->name }}</a></dd>
 
                             <dt>Created</dt>
                             <dd>{{ $file->created_at->diffForHumans() }}</dd>
@@ -44,7 +52,7 @@
                             <dd>{{ $file->game_version }}</dd>
 
                             <dt>File Size</dt>
-                            <dd>{{ $file->getFileSize() }} KB</dd>
+                            <dd>{{ $file->getFileSize() }}</dd>
 
                             <dt>Downloads</dt>
                             <dd>{{ $file->downloads_count }}</dd>
@@ -56,27 +64,23 @@
                             </a>
                         </div>
                     </div>
-                </div>
 
-                @can('delete', $file)
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            File Actions
-                        </div>
-
-                        <div class="panel-body">
+                    @can('delete', $file)
+                        <div class="panel-footer">
+                            <div class="text-right">
                                 <form role="form" method="POST" action="{{ route('plugins.files.destroy', [$plugin->id, $file->id]) }}">
                                     {{ csrf_field() }}
 
                                     {{ method_field('DELETE') }}
 
-                                    <button type="submit" class="btn btn-block btn-danger">
-                                        Delete
+                                    <button type="submit" class="btn btn-xs btn-danger">
+                                        Delete File
                                     </button>
                                 </form>
+                            </div>
                         </div>
-                    </div>
-                @endcan
+                    @endcan
+                </div>
             </div>
         </div>
     </div>

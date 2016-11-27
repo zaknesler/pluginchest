@@ -54,13 +54,19 @@ class PluginFile extends Model
     }
 
     /**
-     * Get the file size in kilobytes.
+     * Get the file size with units.
      *
      * @return integer
      */
     public function getFileSize()
     {
-        return number_format($this->file_size / 1024, 1);
+        $fileSize = $this->file_size / 1024;
+
+        if ($fileSize > 1024) {
+            return number_format($fileSize / 1024, 1) . ' MB';
+        }
+
+        return number_format($fileSize, 1) . ' KB';
     }
 
     /**

@@ -21,28 +21,16 @@
 
             <div class="col-md-4">
                 <div class="panel panel-default">
-                    <div class="panel-heading">
-                        Plugin Actions
-                    </div>
+                    <div class="panel-heading clearfix">
+                        <div class="pull-left">
+                            Plugin Information
+                        </div>
 
-                    <div class="panel-body">
-                        <ul class="list-group">
-                            <a href="{{ route('plugins.files.index', $plugin->id) }}" class="list-group-item">
-                                View Files
-                            </a>
-
-                            @can('update', $plugin)
-                                <a href="{{ route('plugins.edit', $plugin->id) }}" class="list-group-item">
-                                    Edit Plugin
-                                </a>
-                            @endcan
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        Plugin Information
+                        @can('update', $plugin)
+                            <div class="pull-right">
+                                <a href="{{ route('plugins.edit', $plugin->id) }}">Edit</a>
+                            </div>
+                        @endcan
                     </div>
 
                     <div class="panel-body">
@@ -86,6 +74,20 @@
                                 </a>
                             @endcan
                         </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Plugin Actions
+                    </div>
+
+                    <div class="panel-body">
+                        <ul class="list-group">
+                            <a href="{{ route('plugins.files.index', $plugin->id) }}" class="list-group-item">
+                                View All Files
+                            </a>
+                        </ul>
                     </div>
                 </div>
             </div>

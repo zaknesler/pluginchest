@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Plugins;
 
+use App\Plugin;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreatePluginFormRequest extends FormRequest
@@ -13,7 +14,7 @@ class CreatePluginFormRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return $this->user()->can('create', Plugin::class);;
     }
 
     /**

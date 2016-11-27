@@ -4,7 +4,7 @@ namespace App\Http\Requests\Plugins\Files;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateFileFormRequest extends FormRequest
+class UpdateFileFormRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,9 +13,9 @@ class CreateFileFormRequest extends FormRequest
      */
     public function authorize()
     {
-        $plugin = $this->route('plugin');
+        $pluginFile = $this->route('pluginFile');
 
-        return $plugin && $this->user()->can('createPluginFile', $plugin);
+        return $pluginFile && $this->user()->can('update', $pluginFile);
     }
 
     /**
@@ -26,7 +26,7 @@ class CreateFileFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'file' => 'required|file|mimetypes:application/java-archive',
+            // 'file' => 'required|file|mimetypes:application/java-archive',
             'name' => 'required|min:4|max:32',
             'summary' => 'required|min:8',
             'stage' => 'required|in:' . implode(',', config('pluginchest.file_stages')),

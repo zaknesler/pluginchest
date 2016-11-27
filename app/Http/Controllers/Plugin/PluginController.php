@@ -67,7 +67,7 @@ class PluginController extends Controller
             'description' => $request->input('description'),
         ]);
 
-        flash('Your plugin has been successfully created.');
+        flash('Plugin has been created.');
 
         return redirect()->route('plugins.show', [$plugin->slug, $plugin->id]);
     }
@@ -124,6 +124,8 @@ class PluginController extends Controller
             'description' => $request->input('description'),
         ]);
 
+        flash('Plugin has been updated.');
+
         return redirect()->route('plugins.show', [$plugin->slug, $plugin->id]);
     }
 
@@ -136,5 +138,9 @@ class PluginController extends Controller
     public function destroy(Plugin $plugin)
     {
         $this->authorize('delete', $plugin);
+
+        flash('Plugin has been deleted.');
+
+        return redirect()->route('plugins.index');
     }
 }

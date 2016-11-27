@@ -28,6 +28,10 @@ Route::group(['prefix' => 'plugins'], function () {
         Route::group(['prefix' => '{pluginFile}'], function () {
             Route::get('download', 'Plugin\File\PluginFileDownloadController')->name('plugins.files.download');
 
+            Route::get('edit', 'Plugin\File\PluginFileController@edit')->name('plugins.files.edit');
+
+            Route::put('/', 'Plugin\File\PluginFileController@update')->name('plugins.files.update');
+
             Route::get('/', 'Plugin\File\PluginFileController@show')->name('plugins.files.show');
 
             Route::delete('/', 'Plugin\File\PluginFileController@destroy')->name('plugins.files.destroy');
