@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
@@ -72,16 +71,15 @@ class RegisterController extends Controller
     }
 
     /**
-     * Handle a registration request for the application.
+     * The user has been registered.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  mixed  $user
+     * @return mixed
      */
-    public function register(Request $request)
+    protected function registered(Request $request, $user)
     {
-        $this->validator($request->all())->validate();
-
-        event(new Registered($user = $this->create($request->all())));
+        auth()->logout();
 
         flash('Your account has been registered. You may now sign in.');
 

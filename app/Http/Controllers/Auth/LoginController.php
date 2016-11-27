@@ -39,16 +39,15 @@ class LoginController extends Controller
     }
 
     /**
-     * Send the response after the user was authenticated.
+     * The user has been authenticated.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  mixed  $user
+     * @return mixed
      */
-    protected function sendLoginResponse(Request $request)
+    protected function authenticated(Request $request, $user)
     {
-        $request->session()->regenerate();
-
-        $this->clearLoginAttempts($request);
+        flash('You have been signed in.');
 
         return redirect('/');
     }
