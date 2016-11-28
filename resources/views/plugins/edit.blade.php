@@ -15,7 +15,7 @@
                         <form role="form" class="form" method="POST" action="{{ route('plugins.update', $plugin->id) }}">
                             {{ csrf_field() }}
 
-                            {{ method_field('PUT') }}
+                            {{ method_field('PATCH') }}
 
                             <div class="form-group{{ $errors->first('name', ' has-error') }}">
                                 <label for="name" class="control-label">Name</label>

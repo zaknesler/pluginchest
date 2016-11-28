@@ -15,7 +15,7 @@
                         <form role="form" class="form-horizontal" method="POST" action="{{ route('settings.profile.update') }}">
                             {{ csrf_field() }}
 
-                            {{ method_field('PUT') }}
+                            {{ method_field('PATCH') }}
 
                             <div class="form-group{{ $errors->first('name', ' has-error') }}">
                                 <label for="name" class="col-md-4 control-label">Name</label>
@@ -65,7 +65,7 @@
                         <form role="form" class="form-horizontal" method="POST" action="{{ route('settings.password.update') }}">
                             {{ csrf_field() }}
 
-                            {{ method_field('PUT') }}
+                            {{ method_field('PATCH') }}
 
                             <div class="form-group{{ $errors->first('old_password', ' has-error') }}">
                                 <label for="old_password" class="col-md-4 control-label">Old Password</label>

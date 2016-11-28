@@ -17,9 +17,9 @@ Auth::routes();
 
 Route::get('settings', 'Settings\SettingsController@index')->name('settings.index');
 
-Route::put('settings/profile', 'Settings\ProfileSettingsController@update')->name('settings.profile.update');
+Route::patch('settings/profile', 'Settings\ProfileSettingsController@update')->name('settings.profile.update');
 
-Route::put('settings/password', 'Settings\PasswordSettingsController@update')->name('settings.password.update');
+Route::patch('settings/password', 'Settings\PasswordSettingsController@update')->name('settings.password.update');
 
 Route::resource('plugins', 'Plugin\PluginController', ['except' => 'show']);
 
@@ -36,7 +36,7 @@ Route::group(['prefix' => 'plugins'], function () {
 
             Route::get('edit', 'Plugin\File\PluginFileController@edit')->name('plugins.files.edit');
 
-            Route::put('/', 'Plugin\File\PluginFileController@update')->name('plugins.files.update');
+            Route::patch('/', 'Plugin\File\PluginFileController@update')->name('plugins.files.update');
 
             Route::get('/', 'Plugin\File\PluginFileController@show')->name('plugins.files.show');
 
