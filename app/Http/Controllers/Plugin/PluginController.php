@@ -28,7 +28,7 @@ class PluginController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  App\Plugin $plugin
+     * @param  App\Plugin  $plugin
      * @return \Illuminate\Http\Response
      */
     public function index(Plugin $plugin)

@@ -15,7 +15,7 @@
                         <form role="form" class="form" method="POST" action="{{ route('plugins.files.store', $plugin->id) }}" enctype="multipart/form-data">
                             {{ csrf_field() }}
 
-                            <div class="form-group{{ $errors->first('name', 'has-error') }}">
+                            <div class="form-group{{ $errors->first('name', ' has-error') }}">
                                 <label for="name" class="control-label">Name</label>
 
                                 <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}" required autofocus />
@@ -27,7 +27,7 @@
                                 @endif
                             </div>
 
-                            <div class="form-group{{ $errors->first('summary', 'has-error') }}">
+                            <div class="form-group{{ $errors->first('summary', ' has-error') }}">
                                 <label for="summary" class="control-label">Summary</label>
 
                                 <textarea name="summary" id="summary" rows="10" class="form-control" required>{{ old('summary') }}</textarea>
@@ -39,7 +39,7 @@
                                 @endif
                             </div>
 
-                            <div class="form-group{{ $errors->first('stage', 'has-error') }}">
+                            <div class="form-group{{ $errors->first('stage', ' has-error') }}">
                                 <label for="stage" class="control-label">Stage</label>
 
                                 <select id="stage" class="form-control" name="stage">
@@ -57,7 +57,7 @@
                                 @endif
                             </div>
 
-                            <div class="form-group{{ $errors->first('game_version', 'has-error') }}">
+                            <div class="form-group{{ $errors->first('game_version', ' has-error') }}">
                                 <label for="game_version" class="control-label">Game Version</label>
 
                                 <select id="game_version" class="form-control" name="game_version">
@@ -75,7 +75,7 @@
                                 @endif
                             </div>
 
-                            <div class="form-group{{ $errors->first('file', 'has-error') }}">
+                            <div class="form-group{{ $errors->first('file', ' has-error') }}">
                                 <label for="file" class="control-label">Plugin File (must be .jar)</label>
 
                                 <input id="file" type="file" class="form-control" name="file" required />

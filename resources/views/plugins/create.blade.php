@@ -15,7 +15,7 @@
                         <form role="form" class="form" method="POST" action="{{ route('plugins.store') }}">
                             {{ csrf_field() }}
 
-                            <div class="form-group{{ $errors->first('name', 'has-error') }}">
+                            <div class="form-group{{ $errors->first('name', ' has-error') }}">
                                 <label for="name" class="control-label">Name</label>
 
                                 <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}" required autofocus />
@@ -27,7 +27,7 @@
                                 @endif
                             </div>
 
-                            <div class="form-group{{ $errors->first('description', 'has-error') }}">
+                            <div class="form-group{{ $errors->first('description', ' has-error') }}">
                                 <label for="description" class="control-label">Description</label>
 
                                 <textarea name="description" id="description" rows="10" class="form-control" required>{{ old('description') }}</textarea>

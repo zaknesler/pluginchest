@@ -54,6 +54,16 @@
                                 </a>
 
                                 <ul class="dropdown-menu" role="menu">
+                                    <li class="dropdown-header">Account</li>
+
+                                    <li>
+                                        <a href="{{ route('settings.index') }}">
+                                            Settings
+                                        </a>
+                                    </li>
+
+                                    <li class="divider"></li>
+
                                     <li>
                                         <a href="{{ url('/logout') }}"
                                             onclick="event.preventDefault();

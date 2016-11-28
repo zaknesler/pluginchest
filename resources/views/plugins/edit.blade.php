@@ -17,7 +17,7 @@
 
                             {{ method_field('PUT') }}
 
-                            <div class="form-group{{ $errors->first('name', 'has-error') }}">
+                            <div class="form-group{{ $errors->first('name', ' has-error') }}">
                                 <label for="name" class="control-label">Name</label>
 
                                 <input id="name" type="text" class="form-control" name="name" value="{{ old('name') ?? $plugin->name }}" required autofocus />
@@ -29,7 +29,7 @@
                                 @endif
                             </div>
 
-                            <div class="form-group{{ $errors->first('description', 'has-error') }}">
+                            <div class="form-group{{ $errors->first('description', ' has-error') }}">
                                 <label for="description" class="control-label">Description</label>
 
                                 <textarea name="description" id="description" rows="10" class="form-control" required>{{ old('description') ?? $plugin->description }}</textarea>

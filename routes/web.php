@@ -15,6 +15,12 @@ Route::get('/', 'Plugin\PluginController@index')->name('home');
 
 Auth::routes();
 
+Route::get('settings', 'Settings\SettingsController@index')->name('settings.index');
+
+Route::put('settings/profile', 'Settings\ProfileSettingsController@update')->name('settings.profile.update');
+
+Route::put('settings/password', 'Settings\PasswordSettingsController@update')->name('settings.password.update');
+
 Route::resource('plugins', 'Plugin\PluginController', ['except' => 'show']);
 
 Route::group(['prefix' => 'plugins'], function () {
