@@ -166,6 +166,7 @@ return [
         /*
          * Package Service Providers...
          */
+        Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
         Laracasts\Flash\FlashServiceProvider::class,
         GrahamCampbell\Markdown\MarkdownServiceProvider::class,
 
@@ -229,6 +230,7 @@ return [
         /*
          * Package Aliases...
          */
+        'Bugsnag' => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
         'Markdown' => GrahamCampbell\Markdown\Facades\Markdown::class,
 
     ],
