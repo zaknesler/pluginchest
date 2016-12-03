@@ -79,7 +79,7 @@ class PluginFileController extends Controller
 
         $request->file('file')->move(
             config('filesystems.disks.local-plugin-files.root'),
-            $fileId = uniqid(true)
+            $fileId = uniqid(true) + str_random(5)
         );
 
         $this->dispatch(new StorePluginFile($file, $fileId));

@@ -24,6 +24,17 @@ return [
         '1.7.10',
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | File Stages
+    |--------------------------------------------------------------------------
+    |
+    | Here are all of the file stages that are available for a user to pick
+    | from. They are used to signify the "stage" of each individual file
+    | so any user can easily see the distance a plugin has progressed.
+    |
+    */
+
     'file_stages' => [
         'alpha',
         'beta',
