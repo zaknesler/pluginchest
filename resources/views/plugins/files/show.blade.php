@@ -68,7 +68,7 @@
                     @can('delete', $file)
                         <div class="panel-footer">
                             <div class="text-right">
-                                <form role="form" method="POST" action="{{ route('plugins.files.destroy', [$plugin->id, $file->id]) }}">
+                                <form role="form" method="POST" action="{{ route('plugins.files.destroy', [$plugin->id, $file->id]) }}" onsubmit="return confirm('Delete file? This cannot be undone.')">
                                     {{ csrf_field() }}
 
                                     {{ method_field('DELETE') }}

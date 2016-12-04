@@ -75,19 +75,27 @@
                             @endcan
                         </div>
                     </div>
-                </div>
 
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        Plugin Actions
-                    </div>
-
-                    <div class="panel-body">
-                        <ul class="list-group">
-                            <a href="{{ route('plugins.files.index', $plugin->id) }}" class="list-group-item">
+                    <div class="panel-footer clearfix">
+                        <div class="pull-left">
+                            <a href="{{ route('plugins.files.index', $plugin->id) }}">
                                 View All Files
                             </a>
-                        </ul>
+                        </div>
+
+                        @can('delete', $plugin)
+                            <div class="pull-right">
+                                <form role="form" method="POST" action="{{ route('plugins.destroy', $plugin->id) }}" onsubmit="return confirm('Delete plugin? This will also delete all of its files and cannot be undone.')">
+                                    {{ csrf_field() }}
+
+                                    {{ method_field('DELETE') }}
+
+                                    <button type="submit" class="btn btn-xs btn-danger">
+                                        Delete Plugin
+                                    </button>
+                                </form>
+                            </div>
+                        @endcan
                     </div>
                 </div>
             </div>

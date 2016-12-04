@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Plugin;
 use App\Plugin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Jobs\Plugins\Files\DeletePluginFile;
 use App\Http\Requests\Plugins\CreatePluginFormRequest;
 use App\Http\Requests\Plugins\UpdatePluginFormRequest;
 
@@ -138,6 +139,12 @@ class PluginController extends Controller
     public function destroy(Plugin $plugin)
     {
         $this->authorize('delete', $plugin);
+
+        $plugin->files()->get()->each(function ($file) {
+            $this->dispatch(new DeletePluginFile($file));
+        });
+
+        $plugin->delete();
 
         flash('Plugin has been deleted.');
 
