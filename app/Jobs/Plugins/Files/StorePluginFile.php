@@ -41,12 +41,12 @@ class StorePluginFile implements ShouldQueue
         $file_size = null;
         $filePath = config('filesystems.disks.local-plugin-files.root') . '/' . $this->fileId;
 
-        if (Storage::disk('s3-plugin-files')->put($fileName, $handle = fopen($filePath, 'r+'))) {
+        if (Storage::disk('prod-plugin-files')->put($fileName, $handle = fopen($filePath, 'r+'))) {
             fclose($handle);
 
             File::delete($filePath);
 
-            $fileSize = Storage::disk('s3-plugin-files')->size($fileName);
+            $fileSize = Storage::disk('prod-plugin-files')->size($fileName);
         }
 
         $this->pluginFile->file = $fileName;

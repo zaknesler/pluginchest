@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => 'local',
+    'default' => env('FILESYSTEM_DRIVER', 'local'),
 
     /*
     |--------------------------------------------------------------------------
@@ -26,7 +26,7 @@ return [
     |
     */
 
-    'cloud' => 's3',
+    'cloud' => env('FILESYSTEM_CLOUD', 's3'),
 
     /*
     |--------------------------------------------------------------------------
@@ -51,6 +51,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
+            'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],
 
@@ -67,13 +68,16 @@ return [
             'root' => storage_path('app/local-plugin-files'),
         ],
 
-        's3-plugin-files' => [
-            'driver' => 's3',
-            'root' => 'plugin-files',
-            'key' => env('S3_KEY'),
-            'secret' => env('S3_SECRET'),
-            'region' => env('S3_REGION'),
-            'bucket' => env('S3_BUCKET'),
+        'prod-plugin-files' => [
+            'driver' => 'local',
+            'root' => storage_path('app/prod-plugin-files'),
+
+            // 'driver' => 's3',
+            // 'root' => 'plugin-files',
+            // 'key' => env('S3_KEY'),
+            // 'secret' => env('S3_SECRET'),
+            // 'region' => env('S3_REGION'),
+            // 'bucket' => env('S3_BUCKET'),
         ],
 
     ],

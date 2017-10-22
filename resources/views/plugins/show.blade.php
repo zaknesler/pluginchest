@@ -14,7 +14,7 @@
             <div class="col-md-8">
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        {!! Markdown::convertToHtml($plugin->description) !!}
+                        @parsedown($plugin->description)
                     </div>
                 </div>
             </div>

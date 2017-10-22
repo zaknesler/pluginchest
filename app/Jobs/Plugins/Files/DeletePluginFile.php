@@ -32,7 +32,7 @@ class DeletePluginFile implements ShouldQueue
      */
     public function handle()
     {
-        Storage::disk('s3-plugin-files')->delete($this->pluginFile->file);
+        Storage::disk('prod-plugin-files')->delete($this->pluginFile->file);
 
         $this->pluginFile->delete();
     }

@@ -18,7 +18,7 @@
                     </div>
 
                     <div class="panel-body">
-                        {!! Markdown::convertToHtml($file->summary) !!}
+                        @parsedown($file->summary)
                     </div>
                 </div>
             </div>

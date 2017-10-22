@@ -20,7 +20,7 @@ class PluginFileDownloadController extends Controller
      */
     public function __invoke(Plugin $plugin, PluginFile $pluginFile)
     {
-        $file = Storage::disk('s3-plugin-files')->get($pluginFile->file);
+        $file = Storage::disk('prod-plugin-files')->get($pluginFile->file);
 
         $response = response($file, 200, [
             'Content-Type' => 'application/java-archive',
