@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Plugin;
 use Illuminate\Http\Request;
+use App\Http\Requests\Plugin\StorePlugin;
 
 class PluginController extends Controller
 {
@@ -30,10 +31,10 @@ class PluginController extends Controller
     /**
      * Store a newly created plugin in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\Plugin\StorePlugin $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StorePlugin $request)
     {
         $plugin = Plugin::create([
             'name' => request('name'),

@@ -18,12 +18,40 @@ class PluginTest extends TestCase
 
         $response = $this->post(route('plugins.store'), [
             'name' => 'TestPlugin',
-            'description' => 'This is just a test plugin.',
+            'description' => 'This is just a test plugin whose description is long.',
         ]);
 
         $response->assertRedirect(route('plugins.show', Plugin::first()));
         $this->assertEquals(1, Plugin::count());
         $this->assertEquals(1, Plugin::first()->users()->count());
         $this->assertTrue(Plugin::first()->users()->first()->pivot->is_creator);
+    }
+
+    /** @test */
+    function a_plugin_must_have_a_valid_name()
+    {
+        $this->authenticate();
+
+        $response = $this->post(route('plugins.store'), [
+            'name' => 'Nope',
+            'description' => 'This is just a test plugin whose description is long.',
+        ]);
+
+        $response->assertSessionHasErrors('name');
+        $this->assertEquals(0, Plugin::count());
+    }
+
+    /** @test */
+    function a_plugin_must_have_a_valid_description()
+    {
+        $this->authenticate();
+
+        $response = $this->post(route('plugins.store'), [
+            'name' => 'TestPlugin',
+            'description' => 'Too short.',
+        ]);
+
+        $response->assertSessionHasErrors('description');
+        $this->assertEquals(0, Plugin::count());
     }
 }
