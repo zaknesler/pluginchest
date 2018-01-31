@@ -1,10 +1,9 @@
 import Vue from 'vue';
 import axios from 'axios';
-import lodash from 'lodash';
 
 window.Vue = Vue;
-window.axios = axios
-window._ = lodash;
+window.axios = axios;
+
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
@@ -16,4 +15,4 @@ if (token) {
     console.error('Cannot load CSRF token.');
 }
 
-Vue.prototype.$http = axios;
+Vue.prototype.$http = window.axios;

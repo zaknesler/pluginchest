@@ -11,12 +11,8 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'HomeController@index')->name('home');
 
-Route::resource('plugins', 'PluginController');
+Route::resource('plugins', 'Plugin\PluginController');
 
 Auth::routes();
-
-Route::get('/', 'HomeController@index')->name('home');

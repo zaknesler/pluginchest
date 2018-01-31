@@ -1,5 +1,13 @@
 import './bootstrap';
 
+import LogoutComponent from './components/Logout.vue';
+
+Vue.component('logout', LogoutComponent);
+
 const app = new Vue({
-    el: '#app',
+    el: '#root',
+
+    data: {
+        responsiveNav: false
+    }
 });

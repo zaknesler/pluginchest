@@ -1,70 +1,59 @@
 @extends('layouts.app')
 
+@section('title', 'Reset Password')
+
 @section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">Reset Password</div>
+    <div class="container mx-auto p-4">
+        <div class="mx-auto w-full md:w-2/3 lg:w-1/3">
+            <div class="font-medium text-lg mb-4">Reset Password</div>
 
-                <div class="panel-body">
-                    <form class="form-horizontal" method="POST" action="{{ route('password.request') }}">
-                        {{ csrf_field() }}
+            <div class="bg-white border border-grey-lighter shadow rounded p-4">
+                <form action="{{ route('password.request') }}" method="POST">
+                    {{ csrf_field() }}
 
-                        <input type="hidden" name="token" value="{{ $token }}">
+                    <input type="hidden" name="token" value="{{ $token }}">
 
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label for="email" class="col-md-4 control-label">E-Mail Address</label>
+                    <div class="mb-4">
+                        <label class="block uppercase tracking-wide text-grey-darker text-xs font-medium mb-2" for="email">
+                            E-Mail
+                        </label>
 
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" value="{{ $email or old('email') }}" required autofocus>
+                        <input required tabindex="1" autocomplete="off" class="appearance-none leading-normal block w-full rounded p-3 bg-grey-lighter text-grey-darker border border-grey-light {{ $errors->first('email', ' border-red') }}" id="email" type="email" name="email" value="{{ $email or old('email') }}" />
 
-                                @if ($errors->has('email'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
+                        @if ($errors->has('email'))
+                            <div class="text-red font-medium mt-2">{{ $errors->first('email') }}</div>
+                        @endif
+                    </div>
 
-                        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                            <label for="password" class="col-md-4 control-label">Password</label>
+                    <div class="mb-4">
+                        <label class="block uppercase tracking-wide text-grey-darker text-xs font-medium mb-2" for="password">
+                            New Password
+                        </label>
 
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control" name="password" required>
+                        <input required tabindex="2" autocomplete="off" class="appearance-none leading-normal block w-full rounded p-3 bg-grey-lighter text-grey-darker border border-grey-light {{ $errors->first('password', ' border-red') }}" id="password" type="password" name="password" />
 
-                                @if ($errors->has('password'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
+                        @if ($errors->has('password'))
+                            <div class="text-red font-medium mt-2">{{ $errors->first('password') }}</div>
+                        @endif
+                    </div>
 
-                        <div class="form-group{{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
-                            <label for="password-confirm" class="col-md-4 control-label">Confirm Password</label>
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
+                    <div class="mb-4">
+                        <label class="block uppercase tracking-wide text-grey-darker text-xs font-medium mb-2" for="password_confirmation">
+                            Confirm New Password
+                        </label>
 
-                                @if ($errors->has('password_confirmation'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('password_confirmation') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
+                        <input required tabindex="3" autocomplete="off" class="appearance-none leading-normal block w-full rounded p-3 bg-grey-lighter text-grey-darker border border-grey-light {{ $errors->first('password_confirmation', ' border-red') }}" id="password_confirmation" type="password" name="password_confirmation" />
 
-                        <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
-                                    Reset Password
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                        @if ($errors->has('password_confirmation'))
+                            <div class="text-red font-medium mt-2">{{ $errors->first('password_confirmation') }}</div>
+                        @endif
+                    </div>
+
+                    <div class="text-right">
+                        <button tabindex="4" type="submit" class="cursor-pointer bg-blue hover:bg-blue-dark border-none text-white font-medium py-3 px-6 rounded shadow">Reset Password</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-</div>
 @endsection

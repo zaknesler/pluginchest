@@ -1,13 +1,29 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Plugin;
 
 use App\Models\Plugin;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Plugin\StorePlugin;
 
 class PluginController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth', [
+            'except' => [
+                'index',
+                'show',
+            ],
+        ]);
+    }
+
     /**
      * Display a listing of the plugin.
      *
