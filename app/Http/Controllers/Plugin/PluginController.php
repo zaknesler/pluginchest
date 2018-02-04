@@ -31,7 +31,9 @@ class PluginController extends Controller
      */
     public function index()
     {
-        //
+        $plugins = Plugin::latest()->with('user')->paginate(25);
+
+        // return view('plugins.index', compact('plugins'));
     }
 
     /**
