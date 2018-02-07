@@ -15,7 +15,20 @@ class CreatePluginFilesTable extends Migration
     {
         Schema::create('plugin_files', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('plugin_id')->unsigned()->index();
+            $table->integer('user_id')->unsigned()->index();
+            $table->string('name');
+            $table->text('description');
+            $table->integer('downloads_count')->default(0);
+            $table->string('file_path')->nullable();
+            $table->string('file_size')->nullable();
+            $table->string('game_version');
+            $table->string('stage');
+            $table->timestamp('approved_at')->nullable();
             $table->timestamps();
+
+            $table->foreign('plugin_id')->references('id')->on('plugins')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

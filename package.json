@@ -12,11 +12,11 @@
     "devDependencies": {
         "axios": "^0.17",
         "cross-env": "^5.1",
-        "laravel-mix": "^1.0",
-        "laravel-mix-purgecss": "^1.0.5",
-        "less": "^2.7.3",
-        "less-loader": "^4.0.5",
-        "tailwindcss": ">=0.1.0",
-        "vue": "^2.5.7"
+        "laravel-mix": "^2.0",
+        "laravel-mix-purgecss": "^1.0",
+        "less": "^2.7",
+        "less-loader": "^4.0",
+        "tailwindcss": "^0.4",
+        "vue": "^2.5"
     }
 }
