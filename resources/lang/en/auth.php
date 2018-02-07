@@ -18,5 +18,6 @@ return [
 
     'registered' => 'Your account has been registered, you may now sign in.',
     'authenticated' => 'You have been signed in.',
+    'invalidated' => 'You have been signed out.',
 
 ];

@@ -64,7 +64,8 @@ class LoginController extends Controller
 
         flash(trans('auth.authenticated'));
 
-        return redirect()->intended($this->redirectPath());
+        return $this->authenticated($request, $this->guard()->user())
+                ?: redirect()->intended($this->redirectPath());
     }
     /**
      * Log the user out of the application.
@@ -77,6 +78,8 @@ class LoginController extends Controller
         $this->guard()->logout();
 
         $request->session()->invalidate();
+
+        flash(trans('auth.invalidated'));
 
         return response()->json([
             'redirect_url' => url(route('home')),
