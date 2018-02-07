@@ -34,14 +34,20 @@ class PluginFileController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Plugin $plugin)
     {
-        // store temporary file
-        // dispatch job to validate file
-            // unzip .jar to location
-            // verify that plugin.yml exists
-            // ensure that the name, version, author, description, and main settings exist
-            // match "main" location from plugin.yml with directories
+        $file = $plugin->files()->create([
+            'name' => request('name'),
+            'description' => request('description'),
+            'stage' => request('stage'),
+            'game_version' => request('game_version'),
+        ]);
+
+        $file->users()->associate(auth()->user());
+
+        $file->storeFile(request()->file('plugin_file'));
+
+        return redirect()->route('plugins.show', $plugin);
     }
 
     /**

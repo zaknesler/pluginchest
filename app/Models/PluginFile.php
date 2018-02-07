@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Models\User;
 use App\Models\Plugin;
+use App\Jobs\ValidatePluginFile;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Database\Eloquent\Model;
 
 class PluginFile extends Model
@@ -45,19 +47,34 @@ class PluginFile extends Model
     }
 
     /**
+     * Temporarily store file and dispatch job to validate it.
+     *
+     * @param  \Illuminate\Http\UploadedFile  $file
+     * @return null
+     */
+    public function storeFile(UploadedFile $file)
+    {
+        $name = uniqid(true) . str_random(10);
+
+        $file->storeAs(config('pluginchest.storage.temporary'), $name);
+
+        dispatch(new ValidatePluginFile($file, $name));
+    }
+
+    /**
      * Get the file size with units.
      *
-     * @return integer
+     * @return string
      */
     public function getFileSize()
     {
-        $fileSize = $this->file_size / 1024;
+        $value = $this->file_size / 1024;
 
-        if ($fileSize > 1024) {
-            return number_format($fileSize / 1024, 1) . ' MB';
+        if ($value > 1024) {
+            return number_format($value / 1024, 1) . ' MB';
         }
 
-        return number_format($fileSize, 1) . ' KB';
+        return number_format($value, 1) . ' KB';
     }
 
     /**

@@ -2,6 +2,11 @@ game<?php
 
 return [
 
+    'storage' => [
+        'temporary' => 'plugin-files-temporary',
+        'validated' => 'plugin-files',
+    ],
+
     'game_versions' => [
         '1.12.2',
         '1.12.1',
