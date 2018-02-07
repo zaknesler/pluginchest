@@ -16,7 +16,7 @@ class RegisterTest extends TestCase
 
     protected function successfulRegistrationRoute()
     {
-        return route('home');
+        return route('login');
     }
 
     protected function registerGetRoute()
