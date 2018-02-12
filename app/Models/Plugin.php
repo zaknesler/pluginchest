@@ -15,6 +15,7 @@ class Plugin extends Model
      */
     protected $fillable = [
         'name',
+        'slug',
         'description',
         'published_at',
     ];

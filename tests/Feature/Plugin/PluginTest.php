@@ -24,6 +24,7 @@ class PluginTest extends TestCase
         $response->assertRedirect(route('plugins.show', Plugin::first()));
         $this->assertEquals(1, Plugin::count());
         $this->assertEquals(1, Plugin::first()->users()->count());
+        $this->assertNotNull(Plugin::first()->slug);
         $this->assertTrue(Plugin::first()->users()->first()->pivot->is_creator);
     }
 

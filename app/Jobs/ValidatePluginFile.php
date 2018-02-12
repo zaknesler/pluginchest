@@ -48,7 +48,5 @@ class ValidatePluginFile implements ShouldQueue
         // ensure that the name, version, and main settings exist
         // match "main" location from plugin.yml with directories (maybe)
         // set verified_at to current timestamp
-
-        dispatch(new StorePluginFile($this->file, $this->name));
     }
 }

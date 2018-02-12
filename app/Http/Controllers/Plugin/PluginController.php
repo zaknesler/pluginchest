@@ -56,6 +56,7 @@ class PluginController extends Controller
     {
         $plugin = Plugin::create([
             'name' => request('name'),
+            'slug' => str_slug(request('name')),
             'description' => request('description'),
             'published_at' => null,
         ]);

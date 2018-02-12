@@ -60,7 +60,9 @@ class PluginFile extends Model
         $file->storeAs(config('pluginchest.storage.temporary'), $name);
         $this->update(['temporary_file' => $name]);
 
-        dispatch(new ValidatePluginFile($file));
+        ValidatePluginFile::dispatch($this)->chain([
+            new StorePluginFile($this),
+        ]);
     }
 
     /**

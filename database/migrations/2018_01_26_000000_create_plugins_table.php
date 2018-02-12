@@ -16,6 +16,7 @@ class CreatePluginsTable extends Migration
         Schema::create('plugins', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->string('slug');
             $table->text('description');
             $table->timestamp('published_at')->nullable()->default(null);
             $table->timestamps();
