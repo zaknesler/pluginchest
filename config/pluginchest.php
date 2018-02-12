@@ -1,4 +1,4 @@
-game<?php
+<?php
 
 return [
 

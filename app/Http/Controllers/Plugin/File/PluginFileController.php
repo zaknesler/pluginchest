@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Plugin;
+namespace App\Http\Controllers\Plugin\File;
 
 use App\Models\PluginFile;
 use Illuminate\Http\Request;
@@ -45,7 +45,7 @@ class PluginFileController extends Controller
 
         $file->users()->associate(auth()->user());
 
-        $file->storeFile(request()->file('plugin_file'));
+        $file->storeTemporaryFile(request()->file('plugin_file'));
 
         return redirect()->route('plugins.show', $plugin);
     }

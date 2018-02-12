@@ -20,7 +20,8 @@ class PluginFile extends Model
         'description',
         'approved_at',
         'downloads_count',
-        'file_path',
+        'temporary_file',
+        'file_name',
         'file_size',
         'game_version',
         'stage',
@@ -43,7 +44,7 @@ class PluginFile extends Model
      */
     public function scopeHasFile($query)
     {
-        return $query->whereNotNull('file_path');
+        return $query->whereNotNull('file_name');
     }
 
     /**
@@ -52,13 +53,14 @@ class PluginFile extends Model
      * @param  \Illuminate\Http\UploadedFile  $file
      * @return null
      */
-    public function storeFile(UploadedFile $file)
+    public function storeTemporaryFile(UploadedFile $file)
     {
         $name = uniqid(true) . str_random(10);
 
         $file->storeAs(config('pluginchest.storage.temporary'), $name);
+        $this->update(['temporary_file' => $name]);
 
-        dispatch(new ValidatePluginFile($file, $name));
+        dispatch(new ValidatePluginFile($file));
     }
 
     /**

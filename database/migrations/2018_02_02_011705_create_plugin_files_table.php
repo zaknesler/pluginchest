@@ -20,10 +20,12 @@ class CreatePluginFilesTable extends Migration
             $table->string('name');
             $table->text('description');
             $table->integer('downloads_count')->default(0);
-            $table->string('file_path')->nullable();
+            $table->string('temporary_file')->nullable();
+            $table->string('file_name')->nullable();
             $table->string('file_size')->nullable();
             $table->string('game_version');
             $table->string('stage');
+            $table->timestamp('validated_at')->nullable();
             $table->timestamp('approved_at')->nullable();
             $table->timestamps();
 

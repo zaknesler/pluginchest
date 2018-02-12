@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\Models\PluginFile;
-use App\Jobs\StorePluginFile;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -11,7 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Exceptions\Plugin\File\InvalidTemporaryFile;
 
-class ValidatePluginFile implements ShouldQueue
+class StorePluginFile implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -43,12 +42,9 @@ class ValidatePluginFile implements ShouldQueue
             throw new InvalidTemporaryFile;
         }
 
-        // unzip .jar
-        // verify that plugin.yml exists
-        // ensure that the name, version, and main settings exist
-        // match "main" location from plugin.yml with directories (maybe)
-        // set verified_at to current timestamp
-
-        dispatch(new StorePluginFile($this->file, $this->name));
+        // create name for plugin
+        // move temporary file to disk
+        // delete demporary file
+        // save file size to database
     }
 }
