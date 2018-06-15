@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Plugin;
+use App\Models\Pivots\PluginUser;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -39,6 +40,6 @@ class User extends Authenticatable
      */
     public function plugins()
     {
-        return $this->hasMany(Plugin::class);
+        return $this->hasManyThrough(Plugin::class, PluginUser::class, 'user_id', 'id');
     }
 }

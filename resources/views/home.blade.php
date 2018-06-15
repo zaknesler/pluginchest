@@ -1,9 +1,13 @@
-@extends('layouts.app')
+@extends('layouts/base')
 
-@section('title', 'Plugins')
+@section('title', 'Home')
+
+@section('show-header', true)
 
 @section('content')
-    <div class="container mx-auto p-4">
-        <div class="font-medium text-lg mb-4">Plugins</div>
-    </div>
+    <example-component title="Plugins">
+        @foreach ($plugins as $plugin)
+            <p>{{ $plugin->slug }}</p>
+        @endforeach
+    </example-component>
 @endsection

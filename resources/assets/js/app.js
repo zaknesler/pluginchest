@@ -1,13 +1,19 @@
 import './bootstrap';
 
-import LogoutComponent from './components/Logout.vue';
+import ExampleComponent from './components/ExampleComponent.vue';
 
-Vue.component('logout', LogoutComponent);
+Vue.component('example-component', ExampleComponent);
 
 const app = new Vue({
-    el: '#root',
+    el: '#app',
 
     data: {
-        responsiveNav: false
+        displayNavigation: false
+    },
+
+    methods: {
+        logout() {
+            this.$refs.logoutForm.submit();
+        }
     }
 });
