@@ -81,8 +81,6 @@ class LoginController extends Controller
 
         flash(trans('auth.invalidated'));
 
-        return response()->json([
-            'redirect_url' => url(route('home')),
-        ]);
+        return redirect()->route('home');
     }
 }

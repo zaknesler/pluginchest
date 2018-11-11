@@ -33,7 +33,7 @@ class PluginController extends Controller
     {
         $plugins = Plugin::latest()->with('user')->paginate(25);
 
-        // return view('plugins.index', compact('plugins'));
+        return view('plugins.index', compact('plugins'));
     }
 
     /**

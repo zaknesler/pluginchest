@@ -14,7 +14,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        // $this->middleware('auth');
     }
 
     /**
@@ -24,8 +24,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $plugins = auth()->user()->plugins()->get();
-
-        return view('home', compact('plugins'));
+        return view('home');
     }
 }
