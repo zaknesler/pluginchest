@@ -25,6 +25,7 @@ class CreatePluginFilesTable extends Migration
             $table->string('file_size')->nullable();
             $table->string('game_version');
             $table->string('stage');
+            $table->json('validation_errors')->nullable();
             $table->timestamp('validated_at')->nullable();
             $table->timestamp('approved_at')->nullable();
             $table->timestamps();

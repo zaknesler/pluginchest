@@ -43,6 +43,16 @@ return [
 
     'disks' => [
 
+        'plugin-files-temporary' => [
+            'driver' => 'local',
+            'root' => storage_path('app/plugin-files-temporary'),
+        ],
+
+        'plugin-files' => [
+            'driver' => 'local',
+            'root' => storage_path('app/plugin-files'),
+        ],
+
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),

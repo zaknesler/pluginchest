@@ -4,9 +4,11 @@ namespace App\Models;
 
 use App\Models\User;
 use App\Models\Plugin;
+use App\Jobs\StorePluginFile;
 use App\Jobs\ValidatePluginFile;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class PluginFile extends Model
 {
@@ -16,8 +18,12 @@ class PluginFile extends Model
      * @var array
      */
     protected $fillable = [
+        'plugin_id',
+        'user_id',
         'name',
         'description',
+        'validation_errors',
+        'validated_at',
         'approved_at',
         'downloads_count',
         'temporary_file',
@@ -48,16 +54,16 @@ class PluginFile extends Model
     }
 
     /**
-     * Temporarily store file and dispatch job to validate it.
+     * Temporarily store file and dispatch jobs to validate and store it.
      *
      * @param  \Illuminate\Http\UploadedFile  $file
      * @return null
      */
-    public function storeTemporaryFile(UploadedFile $file)
+    public function store(UploadedFile $file)
     {
-        $name = uniqid(true) . str_random(10);
+        $name = str_random(8);
 
-        $file->storeAs(config('pluginchest.storage.temporary'), $name);
+        $file->storeAs($name, $name, config('pluginchest.storage.temporary'));
         $this->update(['temporary_file' => $name]);
 
         ValidatePluginFile::dispatch($this)->chain([

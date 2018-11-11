@@ -2,14 +2,17 @@
 
 namespace App\Jobs;
 
+use ZipArchive;
 use App\Models\PluginFile;
 use App\Jobs\StorePluginFile;
 use Illuminate\Bus\Queueable;
+use Symfony\Component\Yaml\Yaml;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Exceptions\Plugin\File\InvalidTemporaryFile;
+use App\Exceptions\Plugin\File\InvalidPluginFile;
 
 class ValidatePluginFile implements ShouldQueue
 {
@@ -20,7 +23,14 @@ class ValidatePluginFile implements ShouldQueue
      *
      * @var App\Models\PluginFile
      */
-    protected $file
+    protected $file;
+
+    /**
+     * List of validation errors discovered.
+     *
+     * @var \Illuminate\Support\Collection
+     */
+    protected $errors;
 
     /**
      * Create a new job instance.
@@ -30,6 +40,64 @@ class ValidatePluginFile implements ShouldQueue
     public function __construct(PluginFile $file)
     {
         $this->file = $file;
+
+        $this->errors = collect();
+    }
+
+    /**
+     * Get the full path to the directory of the plugin file.
+     *
+     * @return string
+     */
+    private function getWorkingDirectory()
+    {
+        return Storage::disk(config('pluginchest.storage.temporary'))->path($this->file->temporary_file);
+    }
+
+    /**
+     * Get the full path to the plugin file.
+     *
+     * @return string
+     */
+    private function getFileFullPath()
+    {
+        return join(DIRECTORY_SEPARATOR, [$this->getWorkingDirectory(), $this->file->temporary_file]);
+    }
+
+    /**
+     * Unzip the .jar file.
+     *
+     * @return string
+     */
+    private function unzip()
+    {
+        $extractTo = join(DIRECTORY_SEPARATOR, [$this->getWorkingDirectory(), 'unzip']);
+
+        $zip = new ZipArchive;
+        $zip->open($this->getFileFullPath());
+        $zip->extractTo($extractTo);
+        $zip->close();
+
+        return $extractTo;
+    }
+
+    /**
+     * Retrieve the contents of the plugin.yml file.
+     *
+     * @param  string $unzipped
+     * @return \Illuminate\Support\Collection
+     */
+    private function getYamlContents($unzipped)
+    {
+        $yamlFile = join(DIRECTORY_SEPARATOR, [$unzipped, 'plugin.yml']);
+
+        if (!file_exists($yamlFile)) {
+            $this->errors->push('No plugin.yml found.');
+
+            return;
+        }
+
+        return collect(Yaml::parseFile($yamlFile));
     }
 
     /**
@@ -39,14 +107,34 @@ class ValidatePluginFile implements ShouldQueue
      */
     public function handle()
     {
-        if (is_null($file->temporary_file)) {
-            throw new InvalidTemporaryFile;
+        $unzipped = $this->unzip();
+        $contents = $this->getYamlContents($unzipped);
+
+        if (!$contents->has(['name', 'version', 'main'])) {
+            $this->errors->push('Invalid plugin.yml file structure.');
         }
 
-        // unzip .jar
-        // verify that plugin.yml exists
-        // ensure that the name, version, and main settings exist
-        // match "main" location from plugin.yml with directories (maybe)
-        // set verified_at to current timestamp
+        $contents->each(function ($key, $value) {
+            if (empty($value)) {
+                $this->errors->push("Invalid plugin.yml: $key is null");
+            }
+        });
+
+        $mainPath = join(DIRECTORY_SEPARATOR,
+            collect($unzipped)
+                ->merge(explode('.', $contents->get('main')))
+                ->toArray());
+
+        if (!file_exists($mainPath . '.class')) {
+            $this->errors->push("The main class defined in plugin.yml could not be located.");
+        }
+
+        if (!$this->errors->isEmpty()) {
+            $this->file->update(['validation_errors' => $this->errors->toJson()]);
+
+            return;
+        }
+
+        $this->file->update(['validated_at' => now()]);
     }
 }

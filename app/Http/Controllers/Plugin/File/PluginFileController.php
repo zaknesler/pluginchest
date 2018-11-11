@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Plugin\File;
 
+use App\Models\Plugin;
 use App\Models\PluginFile;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -41,11 +42,10 @@ class PluginFileController extends Controller
             'description' => request('description'),
             'stage' => request('stage'),
             'game_version' => request('game_version'),
+            'user_id' => request()->user()->id,
         ]);
 
-        $file->users()->associate(auth()->user());
-
-        $file->storeTemporaryFile(request()->file('plugin_file'));
+        $file->store(request()->file('plugin_file'));
 
         return redirect()->route('plugins.show', $plugin);
     }

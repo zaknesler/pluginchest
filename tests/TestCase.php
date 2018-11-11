@@ -3,6 +3,7 @@
 namespace Tests;
 
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -14,5 +15,19 @@ abstract class TestCase extends BaseTestCase
         $this->be($user ?: $user = factory(User::class)->create($overrides));
 
         return $user;
+    }
+
+    public function getValidPluginFile()
+    {
+        $path = base_path('tests/stubs/Plugin/File/ValidPluginFile.jar');
+
+        return new UploadedFile($path, 'ValidPluginFile.jar', filesize($path), null, true);
+    }
+
+    public function getInvalidPluginFile()
+    {
+        $path = base_path('tests/stubs/Plugin/File/InvalidPluginFile.jar');
+
+        return new UploadedFile($path, 'InvalidPluginFile.jar', filesize($path), null, true);
     }
 }
