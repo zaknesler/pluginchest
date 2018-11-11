@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Exceptions\Plugin\File\InvalidPluginFile;
 
 class ValidatePluginFile implements ShouldQueue
 {
@@ -101,15 +100,13 @@ class ValidatePluginFile implements ShouldQueue
     }
 
     /**
-     * Execute the job.
+     * Check that the plugin.yml file has the correct entries
      *
+     * @param  \Illuminate\Support\Collection $contents
      * @return void
      */
-    public function handle()
+    private function checkYamlEntries($contents)
     {
-        $unzipped = $this->unzip();
-        $contents = $this->getYamlContents($unzipped);
-
         if (!$contents->has(['name', 'version', 'main'])) {
             $this->errors->push('Invalid plugin.yml file structure.');
         }
@@ -119,7 +116,17 @@ class ValidatePluginFile implements ShouldQueue
                 $this->errors->push("Invalid plugin.yml: $key is null");
             }
         });
+    }
 
+    /**
+     * Check that the main class defined in the plugin.yml file actually exists in the plugin file.
+     *
+     * @param  array $unzipped
+     * @param  \Illuminate\Support\Collection $contents
+     * @return void
+     */
+    public function checkMainClassExists($unzipped, $contents)
+    {
         $mainPath = join(DIRECTORY_SEPARATOR,
             collect($unzipped)
                 ->merge(explode('.', $contents->get('main')))
@@ -128,13 +135,24 @@ class ValidatePluginFile implements ShouldQueue
         if (!file_exists($mainPath . '.class')) {
             $this->errors->push("The main class defined in plugin.yml could not be located.");
         }
+    }
 
-        if (!$this->errors->isEmpty()) {
-            $this->file->update(['validation_errors' => $this->errors->toJson()]);
+    /**
+     * Execute the job.
+     *
+     * @return void
+     */
+    public function handle()
+    {
+        $unzipped = $this->unzip();
+        $contents = $this->getYamlContents($unzipped);
 
-            return;
-        }
+        $this->checkYamlEntries($contents);
+        $this->checkMainClassExists($unzipped, $contents);
 
-        $this->file->update(['validated_at' => now()]);
+        $this->file->update([
+            'validation_errors' => $this->errors->isEmpty() ? null : $this->errors->toJson(),
+            'validated_at' => $this->errors->isEmpty() ? now() : null,
+        ]);
     }
 }

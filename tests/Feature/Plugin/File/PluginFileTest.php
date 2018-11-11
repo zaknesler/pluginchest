@@ -39,6 +39,7 @@ class PluginFileTest extends TestCase
         $this->assertNotNull($pluginFile->file_name);
         $this->assertNotNull($pluginFile->file_size);
         $this->assertTrue(Storage::disk(config('pluginchest.storage.validated'))->has($pluginFile->file_name));
+        $this->assertEmpty(Storage::disk(config('pluginchest.storage.temporary'))->files());
     }
 
     /** @test */
@@ -90,5 +91,6 @@ class PluginFileTest extends TestCase
         $this->assertNotNull($pluginFile->file_name);
         $this->assertNotNull($pluginFile->file_size);
         $this->assertTrue(Storage::disk(config('pluginchest.storage.validated'))->has($pluginFile->file_name));
+        $this->assertEmpty(Storage::disk(config('pluginchest.storage.temporary'))->files());
     }
 }
