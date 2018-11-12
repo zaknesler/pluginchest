@@ -9,35 +9,28 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\Feature\Auth\Traits\MakesRequestsFromPage;
 
-class ForgotPasswordTest extends TestCase
-{
-    use RefreshDatabase, MakesRequestsFromPage;
+class ForgotPasswordTest extends TestCase {
+    use RefreshDatabase;
 
-    protected function passwordRequestRoute()
-    {
+    protected function passwordRequestRoute() {
         return route('password.request');
     }
 
-    protected function passwordEmailGetRoute()
-    {
+    protected function passwordEmailGetRoute() {
         return route('password.email');
     }
 
-    protected function passwordEmailPostRoute()
-    {
+    protected function passwordEmailPostRoute() {
         return route('password.email');
     }
 
-    protected function guestMiddlewareRoute()
-    {
+    protected function guestMiddlewareRoute() {
         return route('home');
     }
 
     /** @test */
-    public function user_can_view_an_email_password_form()
-    {
+    function user_can_view_an_email_password_form() {
         $response = $this->get($this->passwordRequestRoute());
 
         $response->assertSuccessful();
@@ -45,8 +38,7 @@ class ForgotPasswordTest extends TestCase
     }
 
     /** @test */
-    public function user_cannot_view_an_email_password_form_when_authenticated()
-    {
+    function user_cannot_view_an_email_password_form_when_authenticated() {
         $user = factory(User::class)->make();
 
         $response = $this->actingAs($user)->get($this->passwordRequestRoute());
@@ -55,8 +47,7 @@ class ForgotPasswordTest extends TestCase
     }
 
     /** @test */
-    public function user_receives_an_email_with_apassword_reset_link()
-    {
+    function user_receives_an_email_with_a_password_reset_link() {
         Notification::fake();
         $user = factory(User::class)->create([
             'email' => 'john@example.com',
@@ -73,11 +64,10 @@ class ForgotPasswordTest extends TestCase
     }
 
     /** @test */
-    public function user_does_not_receive_email_when_not_registered()
-    {
+    function user_does_not_receive_email_when_not_registered() {
         Notification::fake();
 
-        $response = $this->fromPage($this->passwordEmailGetRoute())->post($this->passwordEmailPostRoute(), [
+        $response = $this->from($this->passwordEmailGetRoute())->post($this->passwordEmailPostRoute(), [
             'email' => 'nobody@example.com',
         ]);
 
@@ -87,18 +77,16 @@ class ForgotPasswordTest extends TestCase
     }
 
     /** @test */
-    public function email_is_required()
-    {
-        $response = $this->fromPage($this->passwordEmailGetRoute())->post($this->passwordEmailPostRoute(), []);
+    function email_is_required() {
+        $response = $this->from($this->passwordEmailGetRoute())->post($this->passwordEmailPostRoute(), []);
 
         $response->assertRedirect($this->passwordEmailGetRoute());
         $response->assertSessionHasErrors('email');
     }
 
     /** @test */
-    public function email_is_avalid_email()
-    {
-        $response = $this->fromPage($this->passwordEmailGetRoute())->post($this->passwordEmailPostRoute(), [
+    function email_is_a_valid_email() {
+        $response = $this->from($this->passwordEmailGetRoute())->post($this->passwordEmailPostRoute(), [
             'email' => 'invalid-email',
         ]);
 

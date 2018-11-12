@@ -4,46 +4,38 @@ namespace Tests\Feature\Auth;
 
 use Tests\TestCase;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\Feature\Auth\Traits\MakesRequestsFromPage;
 
-class LoginTest extends TestCase
-{
-    use RefreshDatabase, MakesRequestsFromPage;
+class LoginTest extends TestCase {
+    use RefreshDatabase;
 
-    protected function successfulLoginRoute()
-    {
+    protected function successfulLoginRoute() {
         return route('home');
     }
 
-    protected function successfulLogoutRoute()
-    {
-        return route('home');
-    }
-
-    protected function loginGetRoute()
-    {
+    protected function loginGetRoute() {
         return route('login');
     }
 
-    protected function loginPostRoute()
-    {
+    protected function loginPostRoute() {
         return route('login');
     }
 
-    protected function logoutRoute()
-    {
+    protected function logoutRoute() {
         return route('logout');
     }
 
-    protected function guestMiddlewareRoute()
-    {
+    protected function successfulLogoutRoute() {
+        return '/';
+    }
+
+    protected function guestMiddlewareRoute() {
         return route('home');
     }
 
     /** @test */
-    public function user_can_view_alogin_form()
-    {
+    function user_can_view_a_login_form() {
         $response = $this->get($this->loginGetRoute());
 
         $response->assertSuccessful();
@@ -51,8 +43,7 @@ class LoginTest extends TestCase
     }
 
     /** @test */
-    public function user_cannot_view_alogin_form_when_authenticated()
-    {
+    function user_cannot_view_a_login_form_when_authenticated() {
         $user = factory(User::class)->make();
 
         $response = $this->actingAs($user)->get($this->loginGetRoute());
@@ -61,8 +52,7 @@ class LoginTest extends TestCase
     }
 
     /** @test */
-    public function user_can_login_with_correct_credentials()
-    {
+    function user_can_login_with_correct_credentials() {
         $user = factory(User::class)->create([
             'password' => bcrypt($password = 'i-love-laravel'),
         ]);
@@ -77,13 +67,34 @@ class LoginTest extends TestCase
     }
 
     /** @test */
-    public function user_cannot_login_with_incorrect_password()
-    {
+    function remember_me_functionality() {
+        $user = factory(User::class)->create([
+            'id' => random_int(1, 100),
+            'password' => bcrypt($password = 'i-love-laravel'),
+        ]);
+
+        $response = $this->post($this->loginPostRoute(), [
+            'email' => $user->email,
+            'password' => $password,
+            'remember' => 'on',
+        ]);
+
+        $response->assertRedirect($this->successfulLoginRoute());
+        $response->assertCookie(Auth::guard()->getRecallerName(), vsprintf('%s|%s|%s', [
+            $user->id,
+            $user->getRememberToken(),
+            $user->password,
+        ]));
+        $this->assertAuthenticatedAs($user);
+    }
+
+    /** @test */
+    function user_cannot_login_with_incorrect_password() {
         $user = factory(User::class)->create([
             'password' => bcrypt('i-love-laravel'),
         ]);
 
-        $response = $this->fromPage($this->loginGetRoute())->post($this->loginPostRoute(), [
+        $response = $this->from($this->loginGetRoute())->post($this->loginPostRoute(), [
             'email' => $user->email,
             'password' => 'invalid-password',
         ]);
@@ -96,9 +107,8 @@ class LoginTest extends TestCase
     }
 
     /** @test */
-    public function user_cannot_login_with_email_that_does_not_exist()
-    {
-        $response = $this->fromPage($this->loginGetRoute())->post($this->loginPostRoute(), [
+    function user_cannot_login_with_email_that_does_not_exist() {
+        $response = $this->from($this->loginGetRoute())->post($this->loginPostRoute(), [
             'email' => 'nobody@example.com',
             'password' => 'invalid-password',
         ]);
@@ -111,8 +121,7 @@ class LoginTest extends TestCase
     }
 
     /** @test */
-    public function user_can_logout()
-    {
+    function user_can_logout() {
         $this->be(factory(User::class)->create());
 
         $response = $this->post($this->logoutRoute());
@@ -122,8 +131,7 @@ class LoginTest extends TestCase
     }
 
     /** @test */
-    public function user_cannot_logout_when_not_authenticated()
-    {
+    function user_cannot_logout_when_not_authenticated() {
         $response = $this->post($this->logoutRoute());
 
         $response->assertRedirect($this->successfulLogoutRoute());
@@ -131,25 +139,13 @@ class LoginTest extends TestCase
     }
 
     /** @test */
-    function user_cannot_logout_via_get_request()
-    {
-        $this->be(factory(User::class)->create());
-
-        $response = $this->get($this->logoutRoute());
-
-        $response->assertStatus(405);
-        $this->assertAuthenticated();
-    }
-
-    /** @test */
-    public function user_cannot_make_more_than_five_attempts_in_one_minute()
-    {
+    function user_cannot_make_more_than_five_attempts_in_one_minute() {
         $user = factory(User::class)->create([
             'password' => bcrypt($password = 'i-love-laravel'),
         ]);
 
         foreach (range(0, 5) as $_) {
-            $response = $this->fromPage($this->loginGetRoute())->post($this->loginPostRoute(), [
+            $response = $this->from($this->loginGetRoute())->post($this->loginPostRoute(), [
                 'email' => $user->email,
                 'password' => 'invalid-password',
             ]);

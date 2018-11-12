@@ -8,35 +8,28 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\Feature\Auth\Traits\MakesRequestsFromPage;
 
-class RegisterTest extends TestCase
-{
-    use RefreshDatabase, MakesRequestsFromPage;
+class RegisterTest extends TestCase {
+    use RefreshDatabase;
 
-    protected function successfulRegistrationRoute()
-    {
+    protected function successfulRegistrationRoute() {
         return route('login');
     }
 
-    protected function registerGetRoute()
-    {
+    protected function registerGetRoute() {
         return route('register');
     }
 
-    protected function registerPostRoute()
-    {
+    protected function registerPostRoute() {
         return route('register');
     }
 
-    protected function guestMiddlewareRoute()
-    {
+    protected function guestMiddlewareRoute() {
         return route('home');
     }
 
     /** @test */
-    public function user_can_view_aregistration_form()
-    {
+    function user_can_view_a_registration_form() {
         $response = $this->get($this->registerGetRoute());
 
         $response->assertSuccessful();
@@ -44,8 +37,7 @@ class RegisterTest extends TestCase
     }
 
     /** @test */
-    public function user_cannot_view_aregistration_form_when_authenticated()
-    {
+    function user_cannot_view_a_registration_form_when_authenticated() {
         $user = factory(User::class)->make();
 
         $response = $this->actingAs($user)->get($this->registerGetRoute());
@@ -54,24 +46,22 @@ class RegisterTest extends TestCase
     }
 
     /** @test */
-    public function user_can_register()
-    {
-        $this->seed();
+    function user_can_register() {
         Event::fake();
 
-        $this->withoutExceptionHandling();
         $response = $this->post($this->registerPostRoute(), [
-            'username' => 'johndoe',
+            'username' => 'john_doe',
             'email' => 'john@example.com',
             'password' => 'i-love-laravel',
             'password_confirmation' => 'i-love-laravel',
         ]);
 
+        $user = User::first();
+
         $response->assertRedirect($this->successfulRegistrationRoute());
         $this->assertCount(1, $users = User::all());
-        $this->assertGuest();
-        $this->assertEquals('johndoe', ($user = $users->first())->username);
-        $this->assertEquals(null, $user->name);
+        $this->assertFalse(auth()->check());
+        $this->assertEquals('john_doe', $user->username);
         $this->assertEquals('john@example.com', $user->email);
         $this->assertTrue(Hash::check('i-love-laravel', $user->password));
         Event::assertDispatched(Registered::class, function ($e) use ($user) {
@@ -80,9 +70,8 @@ class RegisterTest extends TestCase
     }
 
     /** @test */
-    public function user_cannot_register_without_username()
-    {
-        $response = $this->fromPage($this->registerGetRoute())->post($this->registerPostRoute(), [
+    function user_cannot_register_without_username() {
+        $response = $this->from($this->registerGetRoute())->post($this->registerPostRoute(), [
             'username' => '',
             'email' => 'john@example.com',
             'password' => 'i-love-laravel',
@@ -100,10 +89,9 @@ class RegisterTest extends TestCase
     }
 
     /** @test */
-    public function user_cannot_register_without_email()
-    {
-        $response = $this->fromPage($this->registerGetRoute())->post($this->registerPostRoute(), [
-            'username' => 'johndoe',
+    function user_cannot_register_without_email() {
+        $response = $this->from($this->registerGetRoute())->post($this->registerPostRoute(), [
+            'username' => 'john_doe',
             'email' => '',
             'password' => 'i-love-laravel',
             'password_confirmation' => 'i-love-laravel',
@@ -120,10 +108,9 @@ class RegisterTest extends TestCase
     }
 
     /** @test */
-    public function user_cannot_register_with_invalid_email()
-    {
-        $response = $this->fromPage($this->registerGetRoute())->post($this->registerPostRoute(), [
-            'username' => 'johndoe',
+    function user_cannot_register_with_invalid_email() {
+        $response = $this->from($this->registerGetRoute())->post($this->registerPostRoute(), [
+            'username' => 'john_doe',
             'email' => 'invalid-email',
             'password' => 'i-love-laravel',
             'password_confirmation' => 'i-love-laravel',
@@ -141,10 +128,9 @@ class RegisterTest extends TestCase
     }
 
     /** @test */
-    public function user_cannot_register_without_password()
-    {
-        $response = $this->fromPage($this->registerGetRoute())->post($this->registerPostRoute(), [
-            'username' => 'johndoe',
+    function user_cannot_register_without_password() {
+        $response = $this->from($this->registerGetRoute())->post($this->registerPostRoute(), [
+            'username' => 'john_doe',
             'email' => 'john@example.com',
             'password' => '',
             'password_confirmation' => '',
@@ -162,10 +148,9 @@ class RegisterTest extends TestCase
     }
 
     /** @test */
-    public function user_cannot_register_without_password_confirmation()
-    {
-        $response = $this->fromPage($this->registerGetRoute())->post($this->registerPostRoute(), [
-            'username' => 'johndoe',
+    function user_cannot_register_without_password_confirmation() {
+        $response = $this->from($this->registerGetRoute())->post($this->registerPostRoute(), [
+            'username' => 'john_doe',
             'email' => 'john@example.com',
             'password' => 'i-love-laravel',
             'password_confirmation' => '',
@@ -183,10 +168,9 @@ class RegisterTest extends TestCase
     }
 
     /** @test */
-    public function user_cannot_register_with_passwords_not_matching()
-    {
-        $response = $this->fromPage($this->registerGetRoute())->post($this->registerPostRoute(), [
-            'username' => 'johndoe',
+    function user_cannot_register_with_passwords_not_matching() {
+        $response = $this->from($this->registerGetRoute())->post($this->registerPostRoute(), [
+            'username' => 'john_doe',
             'email' => 'john@example.com',
             'password' => 'i-love-laravel',
             'password_confirmation' => 'i-love-symfony',

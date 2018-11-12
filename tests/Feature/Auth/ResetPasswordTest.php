@@ -9,45 +9,36 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\Feature\Auth\Traits\MakesRequestsFromPage;
 
-class ResetPasswordTest extends TestCase
-{
-    use RefreshDatabase, MakesRequestsFromPage;
+class ResetPasswordTest extends TestCase {
+    use RefreshDatabase;
 
-    protected function getValidToken($user)
-    {
+    protected function getValidToken($user) {
         return Password::broker()->createToken($user);
     }
 
-    protected function getInvalidToken()
-    {
+    protected function getInvalidToken() {
         return 'invalid-token';
     }
 
-    protected function passwordResetGetRoute($token)
-    {
+    protected function passwordResetGetRoute($token) {
         return route('password.reset', $token);
     }
 
-    protected function passwordResetPostRoute()
-    {
+    protected function passwordResetPostRoute() {
         return '/password/reset';
     }
 
-    protected function successfulPasswordResetRoute()
-    {
+    protected function successfulPasswordResetRoute() {
         return route('login');
     }
 
-    protected function guestMiddlewareRoute()
-    {
+    protected function guestMiddlewareRoute() {
         return route('home');
     }
 
     /** @test */
-    public function user_can_view_apassword_reset_form()
-    {
+    function user_can_view_a_password_reset_form() {
         $user = factory(User::class)->create();
 
         $response = $this->get($this->passwordResetGetRoute($token = $this->getValidToken($user)));
@@ -58,8 +49,7 @@ class ResetPasswordTest extends TestCase
     }
 
     /** @test */
-    public function user_cannot_view_apassword_reset_form_when_authenticated()
-    {
+    function user_cannot_view_a_password_reset_form_when_authenticated() {
         $user = factory(User::class)->create();
 
         $response = $this->actingAs($user)->get($this->passwordResetGetRoute($this->getValidToken($user)));
@@ -68,12 +58,10 @@ class ResetPasswordTest extends TestCase
     }
 
     /** @test */
-    public function user_can_reset_password_with_valid_token()
-    {
+    function user_can_reset_password_with_valid_token() {
         Event::fake();
         $user = factory(User::class)->create();
 
-        $this->withoutExceptionHandling();
         $response = $this->post($this->passwordResetPostRoute(), [
             'token' => $this->getValidToken($user),
             'email' => $user->email,
@@ -84,20 +72,19 @@ class ResetPasswordTest extends TestCase
         $response->assertRedirect($this->successfulPasswordResetRoute());
         $this->assertEquals($user->email, $user->fresh()->email);
         $this->assertTrue(Hash::check('new-awesome-password', $user->fresh()->password));
-        $this->assertGuest();
+        $this->assertFalse(auth()->check());
         Event::assertDispatched(PasswordReset::class, function ($e) use ($user) {
             return $e->user->id === $user->id;
         });
     }
 
     /** @test */
-    public function user_cannot_reset_password_with_invalid_token()
-    {
+    function user_cannot_reset_password_with_invalid_token() {
         $user = factory(User::class)->create([
             'password' => bcrypt('old-password'),
         ]);
 
-        $response = $this->fromPage($this->passwordResetGetRoute($this->getInvalidToken()))->post($this->passwordResetPostRoute(), [
+        $response = $this->from($this->passwordResetGetRoute($this->getInvalidToken()))->post($this->passwordResetPostRoute(), [
             'token' => $this->getInvalidToken(),
             'email' => $user->email,
             'password' => 'new-awesome-password',
@@ -111,13 +98,12 @@ class ResetPasswordTest extends TestCase
     }
 
     /** @test */
-    public function user_cannot_reset_password_without_providing_anew_password()
-    {
+    function user_cannot_reset_password_without_providing_a_new_password() {
         $user = factory(User::class)->create([
             'password' => bcrypt('old-password'),
         ]);
 
-        $response = $this->fromPage($this->passwordResetGetRoute($token = $this->getValidToken($user)))->post($this->passwordResetPostRoute(), [
+        $response = $this->from($this->passwordResetGetRoute($token = $this->getValidToken($user)))->post($this->passwordResetPostRoute(), [
             'token' => $token,
             'email' => $user->email,
             'password' => '',
@@ -134,13 +120,12 @@ class ResetPasswordTest extends TestCase
     }
 
     /** @test */
-    public function user_cannot_reset_password_without_proving_an_email()
-    {
+    function user_cannot_reset_password_without_proving_an_email() {
         $user = factory(User::class)->create([
             'password' => bcrypt('old-password'),
         ]);
 
-        $response = $this->fromPage($this->passwordResetGetRoute($token = $this->getValidToken($user)))->post($this->passwordResetPostRoute(), [
+        $response = $this->from($this->passwordResetGetRoute($token = $this->getValidToken($user)))->post($this->passwordResetPostRoute(), [
             'token' => $token,
             'email' => '',
             'password' => 'new-awesome-password',

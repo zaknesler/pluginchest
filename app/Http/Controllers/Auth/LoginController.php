@@ -67,18 +67,15 @@ class LoginController extends Controller
         return $this->authenticated($request, $this->guard()->user())
                 ?: redirect()->intended($this->redirectPath());
     }
+
     /**
-     * Log the user out of the application.
+     * The user has logged out of the application.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return mixed
      */
-    public function logout(Request $request)
+    protected function loggedOut(Request $request)
     {
-        $this->guard()->logout();
-
-        $request->session()->invalidate();
-
         flash(trans('auth.invalidated'));
 
         return redirect()->route('home');

@@ -16,4 +16,4 @@ Route::get('/', 'HomeController@index')->name('home');
 Route::resource('/plugins', 'Plugin\PluginController');
 Route::resource('/plugins/{plugin}/files', 'Plugin\File\PluginFileController');
 
-Auth::routes();
+Auth::routes(['verify' => true]);
