@@ -16,6 +16,11 @@ class LoginTest extends TestCase
         return route('home');
     }
 
+    protected function successfulLogoutRoute()
+    {
+        return route('home');
+    }
+
     protected function loginGetRoute()
     {
         return route('login');
@@ -112,7 +117,7 @@ class LoginTest extends TestCase
 
         $response = $this->post($this->logoutRoute());
 
-        $response->assertJsonStructure(['redirect_url']);
+        $response->assertRedirect($this->successfulLogoutRoute());
         $this->assertGuest();
     }
 
@@ -121,7 +126,7 @@ class LoginTest extends TestCase
     {
         $response = $this->post($this->logoutRoute());
 
-        $response->assertJsonStructure(['redirect_url']);
+        $response->assertRedirect($this->successfulLogoutRoute());
         $this->assertGuest();
     }
 
