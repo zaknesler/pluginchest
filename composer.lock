@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e9a00e5298d22ed4fd6499b3d1b8af35",
+    "content-hash": "21abe83626c180125ffa35226de3b548",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -1086,6 +1086,63 @@
                 "random"
             ],
             "time": "2018-07-02T15:55:56+00:00"
+        },
+        {
+            "name": "parsedown/laravel",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/parsedown/laravel.git",
+                "reference": "a1dd13b4c4309be3f48c9ceb02e3a29ba81548b0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/parsedown/laravel/zipball/a1dd13b4c4309be3f48c9ceb02e3a29ba81548b0",
+                "reference": "a1dd13b4c4309be3f48c9ceb02e3a29ba81548b0",
+                "shasum": ""
+            },
+            "require": {
+                "erusev/parsedown": "~1.6",
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^3.4",
+                "php": ">=7.1",
+                "phpunit/phpunit": "^6.3"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Parsedown\\Providers\\ParsedownServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/Support/helpers.php"
+                ],
+                "psr-4": {
+                    "Parsedown\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Eduardo Agostini",
+                    "email": "edu.agostini@gmail.com"
+                }
+            ],
+            "description": "Official Laravel Wrapper of Parsedown.",
+            "homepage": "http://parsedown.org",
+            "keywords": [
+                "laravel",
+                "parsedown"
+            ],
+            "time": "2018-01-09T22:08:08+00:00"
         },
         {
             "name": "psr/container",
@@ -2473,56 +2530,6 @@
                 "environment"
             ],
             "time": "2018-07-29T20:33:41+00:00"
-        },
-        {
-            "name": "zaknesler/tailwind-preset",
-            "version": "v1.4.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/zaknesler/tailwind-preset.git",
-                "reference": "09c249e22e487f717ad3644e0bf3666439d958d3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/zaknesler/tailwind-preset/zipball/09c249e22e487f717ad3644e0bf3666439d958d3",
-                "reference": "09c249e22e487f717ad3644e0bf3666439d958d3",
-                "shasum": ""
-            },
-            "require": {
-                "laravel/framework": "^5.5"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "ZakNesler\\TailwindPreset\\TailwindServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "ZakNesler\\TailwindPreset\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Zak Nesler",
-                    "email": "contact@zaknesler.com"
-                }
-            ],
-            "description": "A Tailwind CSS preset for Laravel.",
-            "keywords": [
-                "laravel",
-                "laravel preset",
-                "preset",
-                "tailwind",
-                "tailwindcss"
-            ],
-            "time": "2018-11-11T23:34:52+00:00"
         }
     ],
     "packages-dev": [
@@ -2586,51 +2593,6 @@
                 "laravel-dump-server"
             ],
             "time": "2018-10-04T07:22:24+00:00"
-        },
-        {
-            "name": "dczajkowski/auth-tests",
-            "version": "5.7.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/DCzajkowski/auth-tests.git",
-                "reference": "8d836e80c943dcd1bb86dc5531c2e61f25a1fc0f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/DCzajkowski/auth-tests/zipball/8d836e80c943dcd1bb86dc5531c2e61f25a1fc0f",
-                "reference": "8d836e80c943dcd1bb86dc5531c2e61f25a1fc0f",
-                "shasum": ""
-            },
-            "require": {
-                "laravel/framework": "~5.7"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "DCzajkowski\\AuthTests\\AuthTestsServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "files": [
-                    "src/AuthTestsServiceProvider.php",
-                    "src/Console/Commands/AuthTestsMakeCommand.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Dariusz Czajkowski",
-                    "email": "dare.czajkowski@gmail.com",
-                    "homepage": "http://dczajkowski.com"
-                }
-            ],
-            "description": "Authentication tests for Laravel built-in authentication module.",
-            "time": "2018-09-27T16:41:14+00:00"
         },
         {
             "name": "doctrine/instantiator",
@@ -2846,6 +2808,69 @@
             "time": "2016-01-20T08:20:44+00:00"
         },
         {
+            "name": "laravel/telescope",
+            "version": "v0.1.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/telescope.git",
+                "reference": "96e23e08c5de5748b7ea38573da13b3a1f3fc141"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/telescope/zipball/96e23e08c5de5748b7ea38573da13b3a1f3fc141",
+                "reference": "96e23e08c5de5748b7ea38573da13b3a1f3fc141",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "laravel/framework": "~5.7.7",
+                "moontoast/math": "^1.1",
+                "php": "^7.1.3",
+                "symfony/var-dumper": "^4.1"
+            },
+            "require-dev": {
+                "nunomaduro/larastan": "^0.3.7",
+                "orchestra/testbench": "~3.7"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Laravel\\Telescope\\TelescopeServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Telescope\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                },
+                {
+                    "name": "Mohamed Said",
+                    "email": "mohamed@laravel.com"
+                }
+            ],
+            "description": "An elegant debug assistant for the Laravel framework.",
+            "keywords": [
+                "debugging",
+                "laravel",
+                "monitoring"
+            ],
+            "time": "2018-11-09T14:19:41+00:00"
+        },
+        {
             "name": "mockery/mockery",
             "version": "1.2.0",
             "source": {
@@ -2909,6 +2934,55 @@
                 "testing"
             ],
             "time": "2018-10-02T21:52:37+00:00"
+        },
+        {
+            "name": "moontoast/math",
+            "version": "1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ramsey/moontoast-math.git",
+                "reference": "c2792a25df5cad4ff3d760dd37078fc5b6fccc79"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ramsey/moontoast-math/zipball/c2792a25df5cad4ff3d760dd37078fc5b6fccc79",
+                "reference": "c2792a25df5cad4ff3d760dd37078fc5b6fccc79",
+                "shasum": ""
+            },
+            "require": {
+                "ext-bcmath": "*",
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "jakub-onderka/php-parallel-lint": "^0.9.0",
+                "phpunit/phpunit": "^4.7|>=5.0 <5.4",
+                "satooshi/php-coveralls": "^0.6.1",
+                "squizlabs/php_codesniffer": "^2.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Moontoast\\Math\\": "src/Moontoast/Math/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Ben Ramsey",
+                    "email": "ben@benramsey.com",
+                    "homepage": "https://benramsey.com"
+                }
+            ],
+            "description": "A mathematics library, providing functionality for large numbers",
+            "homepage": "https://github.com/ramsey/moontoast-math",
+            "keywords": [
+                "bcmath",
+                "math"
+            ],
+            "time": "2017-02-16T16:54:46+00:00"
         },
         {
             "name": "myclabs/deep-copy",
