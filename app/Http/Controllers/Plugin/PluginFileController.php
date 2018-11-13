@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Plugin\File;
+namespace App\Http\Controllers\Plugin;
 
 use App\Models\Plugin;
 use App\Models\PluginFile;
@@ -32,10 +32,11 @@ class PluginFileController extends Controller
     /**
      * Store a newly created file in storage.
      *
+     * @param \App\Models\Plugin  $plugin
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Plugin $plugin)
+    public function store($slug, Plugin $plugin, Request $request)
     {
         $file = $plugin->files()->create([
             'name' => request('name'),
@@ -47,7 +48,7 @@ class PluginFileController extends Controller
 
         $file->store(request()->file('plugin_file'));
 
-        return redirect()->route('plugins.show', $plugin);
+        return redirect()->route('plugins.show', [$plugin->slug, $plugin->id]);
     }
 
     /**
