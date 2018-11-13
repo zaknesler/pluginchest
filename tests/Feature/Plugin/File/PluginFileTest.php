@@ -25,7 +25,7 @@ class PluginFileTest extends TestCase
         $plugin = factory(Plugin::class)->create();
         $plugin->users()->attach($user = $this->authenticate());
 
-        $response = $this->post('/plugins/1/files', [
+        $response = $this->post(route('plugins.files.store', [$plugin->slug, $plugin->id]), [
             'name' => 'Test Plugin File',
             'description' => 'This is a test plugin file.',
             'stage' => 'release',
@@ -52,7 +52,7 @@ class PluginFileTest extends TestCase
         $plugin = factory(Plugin::class)->create();
         $plugin->users()->attach($user = $this->authenticate());
 
-        $response = $this->post('/plugins/1/files', [
+        $response = $this->post(route('plugins.files.store', [$plugin->slug, $plugin->id]), [
             'name' => 'Test Plugin File',
             'description' => 'This is a test plugin file.',
             'stage' => 'release',
@@ -77,7 +77,7 @@ class PluginFileTest extends TestCase
         $plugin = factory(Plugin::class)->create();
         $plugin->users()->attach($user = $this->authenticate());
 
-        $response = $this->post('/plugins/1/files', [
+        $response = $this->post(route('plugins.files.store', [$plugin->slug, $plugin->id]), [
             'name' => 'Test Plugin File',
             'description' => 'This is a test plugin file.',
             'stage' => 'release',
