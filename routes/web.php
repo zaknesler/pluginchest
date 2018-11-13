@@ -13,7 +13,11 @@
 
 Route::get('/', 'HomeController@index')->name('home');
 
-Route::resource('/plugins', 'Plugin\PluginController');
-Route::resource('/plugins/{plugin}/files', 'Plugin\File\PluginFileController');
+Route::get('/plugins', 'Plugin\PluginController@index')->name('plugins.index');
+Route::post('/plugins', 'Plugin\PluginController@store')->name('plugins.store');
+Route::get('/plugins/create', 'Plugin\PluginController@create')->name('plugins.create');
+Route::get('/plugins/{slug}/{plugin}', 'Plugin\PluginController@show')->name('plugins.show');
+
+Route::post('/plugins/{slug}/{plugin}/files', 'Plugin\PluginFileController@store')->name('plugins.files.store');
 
 Auth::routes(['verify' => true]);
