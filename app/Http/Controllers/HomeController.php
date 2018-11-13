@@ -24,6 +24,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $plugins = Plugin::latest()->with('users')->paginate(25);
+
+        return view('home', compact('plugins'));
     }
 }
