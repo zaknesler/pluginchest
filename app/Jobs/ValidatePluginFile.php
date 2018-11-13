@@ -127,8 +127,7 @@ class ValidatePluginFile implements ShouldQueue
      */
     public function checkMainClassExists($unzipped, $contents)
     {
-        $mainPath = join(DIRECTORY_SEPARATOR,
-            collect($unzipped)
+        $mainPath = join(DIRECTORY_SEPARATOR, collect($unzipped)
                 ->merge(explode('.', $contents->get('main')))
                 ->toArray());
 
