@@ -17,7 +17,7 @@ class CreatePluginUserTable extends Migration
             $table->increments('id');
             $table->integer('plugin_id');
             $table->integer('user_id');
-            $table->boolean('is_creator')->default(false);
+            $table->string('role')->nullable();
         });
     }
 

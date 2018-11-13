@@ -30,7 +30,6 @@ return [
         'release',
     ],
 
-    // TODO: implement roles column in plugin users table
     'plugin_roles' => [
         'owner',
         'author',

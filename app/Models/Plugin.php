@@ -39,6 +39,20 @@ class Plugin extends Model
     ];
 
     /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        self::creating(function ($plugin) {
+            $plugin->slug = str_slug($plugin->name);
+        });
+    }
+
+    /**
      * Get the plugin's total downloads by adding downloads for each file.
      *
      * @return string
@@ -68,7 +82,7 @@ class Plugin extends Model
     {
         return $this->belongsToMany(User::class)
             ->using(PluginUser::class)
-            ->withPivot('is_creator');
+            ->withPivot('role');
     }
 
     /**

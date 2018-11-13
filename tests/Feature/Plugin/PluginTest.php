@@ -21,11 +21,13 @@ class PluginTest extends TestCase
             'description' => 'This is just a test plugin whose description is long.',
         ]);
 
-        $response->assertRedirect(route('plugins.show', Plugin::first()));
+        $plugin = Plugin::first();
+
+        $response->assertRedirect(route('plugins.show', [$plugin->slug, $plugin->id]));
         $this->assertEquals(1, Plugin::count());
-        $this->assertEquals(1, Plugin::first()->users()->count());
-        $this->assertNotNull(Plugin::first()->slug);
-        $this->assertTrue(Plugin::first()->users()->first()->pivot->is_creator);
+        $this->assertEquals(1, $plugin->users()->count());
+        $this->assertNotNull($plugin->slug);
+        $this->assertTrue($plugin->users()->first()->pivot->hasRole('owner'));
     }
 
     /** @test */
@@ -54,5 +56,24 @@ class PluginTest extends TestCase
 
         $response->assertSessionHasErrors('description');
         $this->assertEquals(0, Plugin::count());
+    }
+
+    /** @test */
+    function plugin_create_form_can_be_viewed_by_authenticated_user()
+    {
+        $this->authenticate();
+
+        $response = $this->get(route('plugins.create'));
+
+        $response->assertSuccessful();
+        $response->assertViewIs('plugins.create');
+    }
+
+    /** @test */
+    function plugin_create_form_cannot_be_viewed_by_guest()
+    {
+        $response = $this->get(route('plugins.create'));
+
+        $response->assertRedirect(route('login'));
     }
 }

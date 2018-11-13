@@ -16,24 +16,12 @@ class PluginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth', [
+        $this->middleware(['auth', 'verified'], [
             'except' => [
                 'index',
                 'show',
             ],
         ]);
-    }
-
-    /**
-     * Display a listing of the plugin.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        $plugins = Plugin::latest()->with('user')->paginate(25);
-
-        return view('plugins.index', compact('plugins'));
     }
 
     /**
@@ -43,7 +31,7 @@ class PluginController extends Controller
      */
     public function create()
     {
-        //
+        return view('plugins.create');
     }
 
     /**
@@ -56,14 +44,13 @@ class PluginController extends Controller
     {
         $plugin = Plugin::create([
             'name' => request('name'),
-            'slug' => str_slug(request('name')),
             'description' => request('description'),
             'published_at' => null,
         ]);
 
-        $plugin->users()->attach(request()->user(), ['is_creator' => true]);
+        $plugin->users()->attach(request()->user(), ['role' => 'owner']);
 
-        return redirect(route('plugins.show', $plugin));
+        return redirect(route('plugins.show', [$plugin->slug, $plugin]));
     }
 
     /**
@@ -72,9 +59,11 @@ class PluginController extends Controller
      * @param  App\Models\Plugin  $plugin
      * @return \Illuminate\Http\Response
      */
-    public function show(Plugin $plugin)
+    public function show($slug, Plugin $plugin)
     {
-        //
+        $plugin->load('users');
+
+        return view('plugins.show', compact('plugin'));
     }
 
     /**
