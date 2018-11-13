@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Plugin;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
@@ -23,7 +24,13 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Route::bind('plugin', function ($id, $route) {
+            $plugin = Plugin::where('slug', $route->parameters['slug'])
+                            ->where('id', $id)
+                            ->first();
+
+            return $plugin ?? abort(404);
+        });
 
         parent::boot();
     }
