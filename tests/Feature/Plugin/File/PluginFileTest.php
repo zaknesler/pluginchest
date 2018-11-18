@@ -93,4 +93,29 @@ class PluginFileTest extends TestCase
         $this->assertTrue(Storage::disk(config('pluginchest.storage.validated'))->has($pluginFile->file_name));
         $this->assertEmpty(Storage::disk(config('pluginchest.storage.temporary'))->files());
     }
+
+    /** @test */
+    function plugin_file_can_be_downloaded_and_can_increment_total_downloads_count()
+    {
+        Storage::fake(config('pluginchest.storage.temporary'));
+        Storage::fake(config('pluginchest.storage.validated'));
+
+        $plugin = factory(Plugin::class)->create(['name' => 'Test Plugin']);
+        $plugin->users()->attach($this->authenticate());
+
+        $this->post(route('plugins.files.store', [$plugin->slug, $plugin->id]), [
+            'name' => 'Test Plugin File',
+            'description' => 'This is a test plugin file.',
+            'stage' => 'release',
+            'game_version' => '1.12.2',
+            'plugin_file' => $this->getValidPluginFile(),
+        ]);
+
+        $pluginFile = PluginFile::first();
+
+        $response = $this->get(route('plugins.files.download', [$pluginFile->plugin->slug, $pluginFile->plugin->id, $pluginFile->id]));
+
+        $response->assertHeader('content-disposition', 'attachment; filename=TestPlugin.jar');
+        $response->assertSuccessful();
+    }
 }
