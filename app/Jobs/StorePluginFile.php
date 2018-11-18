@@ -69,15 +69,15 @@ class StorePluginFile implements ShouldQueue
     public function handle()
     {
         $name = str_random(16);
+        $size = filesize($this->getFileFullPath());
 
         Storage::disk(config('pluginchest.storage.validated'))->put($name, file_get_contents($this->getFileFullPath()));
 
+        $this->cleanUp();
         $this->file->update([
             'file_name' => $name,
-            'file_size' => filesize($this->getFileFullPath()),
+            'file_size' => $size,
             'temporary_file' => null,
         ]);
-
-        $this->cleanUp();
     }
 }
