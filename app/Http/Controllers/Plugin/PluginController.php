@@ -37,11 +37,16 @@ class PluginController extends Controller
     /**
      * Store a newly created plugin in storage.
      *
-     * @param  App\Http\Requests\Plugin\StorePlugin $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StorePlugin $request)
+    public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required|min:5',
+            'description' => 'required|min:20',
+        ]);
+
         $plugin = Plugin::create([
             'name' => request('name'),
             'description' => request('description'),

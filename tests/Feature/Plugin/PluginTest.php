@@ -17,17 +17,30 @@ class PluginTest extends TestCase
         $this->authenticate();
 
         $response = $this->post(route('plugins.store'), [
-            'name' => 'TestPlugin',
+            'name' => 'Test Plugin',
             'description' => 'This is just a test plugin whose description is long.',
         ]);
 
         $plugin = Plugin::first();
 
+        $response->assertSessionHasNoErrors();
         $response->assertRedirect(route('plugins.show', [$plugin->slug, $plugin->id]));
         $this->assertEquals(1, Plugin::count());
         $this->assertEquals(1, $plugin->users()->count());
         $this->assertNotNull($plugin->slug);
         $this->assertTrue($plugin->users()->first()->pivot->hasRole('owner'));
+    }
+
+    /** @test */
+    function user_must_be_authenticated_to_create_a_plugin()
+    {
+        $response = $this->post(route('plugins.store'), [
+            'name' => 'Test Plugin',
+            'description' => 'This is just a test plugin whose description is long.',
+        ]);
+
+        $response->assertRedirect(route('login'));
+        $this->assertEquals(0, Plugin::count());
     }
 
     /** @test */
@@ -50,7 +63,7 @@ class PluginTest extends TestCase
         $this->authenticate();
 
         $response = $this->post(route('plugins.store'), [
-            'name' => 'TestPlugin',
+            'name' => 'Test Plugin',
             'description' => 'Too short.',
         ]);
 

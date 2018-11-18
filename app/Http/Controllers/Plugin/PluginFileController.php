@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Plugin;
 use App\Models\Plugin;
 use App\Models\PluginFile;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 
 class PluginFileController extends Controller
@@ -38,6 +39,14 @@ class PluginFileController extends Controller
      */
     public function store(Plugin $plugin, Request $request)
     {
+        $request->validate([
+            'name' => 'required|min:2',
+            'description' => 'required|min:20',
+            'stage' => ['required', Rule::in(config('pluginchest.file_stages'))],
+            'game_version' => ['required', Rule::in(config('pluginchest.game_versions'))],
+            'plugin_file' => 'required|file',
+        ]);
+
         $file = $plugin->files()->create([
             'name' => request('name'),
             'description' => request('description'),

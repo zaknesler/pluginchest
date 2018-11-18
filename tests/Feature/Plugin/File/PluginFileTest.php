@@ -3,6 +3,7 @@
 namespace Tests\Feature\Plugin\File;
 
 use Tests\TestCase;
+use App\Models\User;
 use App\Models\Plugin;
 use App\Models\PluginFile;
 use App\Jobs\StorePluginFile;
@@ -33,6 +34,7 @@ class PluginFileTest extends TestCase
             'plugin_file' => $this->getValidPluginFile(),
         ]);
 
+        $response->assertSessionHasNoErrors();
         $this->assertNotNull($pluginFile = $plugin->files()->first());
         $this->assertNull($pluginFile->validation_errors);
         $this->assertNotNull($pluginFile->validated_at);
@@ -85,6 +87,7 @@ class PluginFileTest extends TestCase
             'plugin_file' => $this->getInvalidPluginFile(),
         ]);
 
+        $response->assertSessionHasNoErrors();
         $this->assertNotNull($pluginFile = $plugin->files()->first());
         $this->assertNotNull($pluginFile->validation_errors);
         $this->assertNull($pluginFile->validated_at);
@@ -117,5 +120,110 @@ class PluginFileTest extends TestCase
 
         $response->assertHeader('content-disposition', 'attachment; filename=TestPlugin.jar');
         $response->assertSuccessful();
+    }
+
+    /** @test */
+    function user_must_be_authenticated_to_create_a_plugin_file()
+    {
+        $response = $this->post(route('plugins.store'), [
+            'name' => 'Test Plugin File',
+            'description' => 'This is a test plugin file.',
+            'stage' => 'release',
+            'game_version' => '1.12.2',
+            'plugin_file' => $this->getValidPluginFile(),
+        ]);
+
+        $response->assertRedirect(route('login'));
+        $this->assertEquals(0, PluginFile::count());
+    }
+
+    /** @test */
+    function plugin_file_must_have_a_valid_name()
+    {
+        $plugin = factory(Plugin::class)->create(['name' => 'Test Plugin']);
+        $plugin->users()->attach($this->authenticate());
+
+        $response = $this->post(route('plugins.files.store', [$plugin->slug, $plugin->id]), [
+            'name' => '',
+            'description' => 'This is a test plugin file.',
+            'stage' => 'release',
+            'game_version' => '1.12.2',
+            'plugin_file' => $this->getValidPluginFile(),
+        ]);
+
+        $response->assertSessionHasErrors('name');
+        $this->assertEquals(0, PluginFile::count());
+    }
+
+    /** @test */
+    function plugin_file_must_have_a_valid_description()
+    {
+        $plugin = factory(Plugin::class)->create(['name' => 'Test Plugin']);
+        $plugin->users()->attach($this->authenticate());
+
+        $response = $this->post(route('plugins.files.store', [$plugin->slug, $plugin->id]), [
+            'name' => 'Valid name',
+            'description' => 'Too short',
+            'stage' => 'release',
+            'game_version' => '1.12.2',
+            'plugin_file' => $this->getValidPluginFile(),
+        ]);
+
+        $response->assertSessionHasErrors('description');
+        $this->assertEquals(0, PluginFile::count());
+    }
+
+    /** @test */
+    function plugin_file_must_have_a_valid_file_stage()
+    {
+        $plugin = factory(Plugin::class)->create(['name' => 'Test Plugin']);
+        $plugin->users()->attach($this->authenticate());
+
+        $response = $this->post(route('plugins.files.store', [$plugin->slug, $plugin->id]), [
+            'name' => 'Valid name',
+            'description' => 'Too short',
+            'stage' => 'invalid',
+            'game_version' => '1.12.2',
+            'plugin_file' => $this->getValidPluginFile(),
+        ]);
+
+        $response->assertSessionHasErrors('stage');
+        $this->assertEquals(0, PluginFile::count());
+    }
+
+    /** @test */
+    function plugin_file_must_have_a_valid_game_version()
+    {
+        $plugin = factory(Plugin::class)->create(['name' => 'Test Plugin']);
+        $plugin->users()->attach($this->authenticate());
+
+        $response = $this->post(route('plugins.files.store', [$plugin->slug, $plugin->id]), [
+            'name' => 'Valid name',
+            'description' => 'Too short',
+            'stage' => 'release',
+            'game_version' => 'invalid',
+            'plugin_file' => $this->getValidPluginFile(),
+        ]);
+
+        $response->assertSessionHasErrors('game_version');
+        $this->assertEquals(0, PluginFile::count());
+    }
+
+    /** @test */
+    function plugin_file_must_have_a_valid_file()
+    {
+        $plugin = factory(Plugin::class)->create(['name' => 'Test Plugin']);
+        $plugin->users()->attach($this->authenticate());
+
+        $response = $this->post(route('plugins.files.store', [$plugin->slug, $plugin->id]), [
+            'name' => 'Valid name',
+            'description' => 'Too short',
+            'stage' => 'release',
+            'game_version' => '1.12.2',
+            'plugin_file' => null,
+        ]);
+
+        $response->assertSessionHasErrors('plugin_file');
+        $this->assertEquals(0, PluginFile::count());
     }
 }
