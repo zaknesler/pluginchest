@@ -32,11 +32,11 @@ class PluginFileController extends Controller
     /**
      * Store a newly created file in storage.
      *
-     * @param \App\Models\Plugin  $plugin
+     * @param  \App\Models\Plugin  $plugin
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store($slug, Plugin $plugin, Request $request)
+    public function store(Plugin $plugin, Request $request)
     {
         $file = $plugin->files()->create([
             'name' => request('name'),

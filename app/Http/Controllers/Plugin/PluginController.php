@@ -56,10 +56,10 @@ class PluginController extends Controller
     /**
      * Display the specified plugin.
      *
-     * @param  App\Models\Plugin  $plugin
+     * @param  \App\Models\Plugin  $plugin
      * @return \Illuminate\Http\Response
      */
-    public function show($slug, Plugin $plugin)
+    public function show(Plugin $plugin)
     {
         $plugin->load('users');
 
@@ -69,7 +69,7 @@ class PluginController extends Controller
     /**
      * Show the form for editing the specified plugin.
      *
-     * @param  App\Models\Plugin  $plugin
+     * @param  \App\Models\Plugin  $plugin
      * @return \Illuminate\Http\Response
      */
     public function edit(Plugin $plugin)
@@ -81,7 +81,7 @@ class PluginController extends Controller
      * Update the specified plugin in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  App\Models\Plugin  $plugin
+     * @param  \App\Models\Plugin  $plugin
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Plugin $plugin)
@@ -92,7 +92,7 @@ class PluginController extends Controller
     /**
      * Remove the specified plugin from storage.
      *
-     * @param  App\Models\Plugin  $plugin
+     * @param  \App\Models\Plugin  $plugin
      * @return \Illuminate\Http\Response
      */
     public function destroy(Plugin $plugin)
