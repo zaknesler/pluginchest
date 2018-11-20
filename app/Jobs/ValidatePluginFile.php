@@ -44,13 +44,33 @@ class ValidatePluginFile implements ShouldQueue
     }
 
     /**
+     * Execute the job.
+     *
+     * @return void
+     */
+    public function handle()
+    {
+        $unzipped = $this->unzip();
+        $contents = $this->getYamlContents($unzipped);
+
+        $this->checkYamlEntries($contents);
+        $this->checkMainClassExists($unzipped, $contents);
+
+        $this->file->update([
+            'validation_errors' => $this->errors->isEmpty() ? null : $this->errors->toJson(),
+            'validated_at' => $this->errors->isEmpty() ? now() : null,
+        ]);
+    }
+
+    /**
      * Get the full path to the directory of the plugin file.
      *
      * @return string
      */
     private function getWorkingDirectory()
     {
-        return Storage::disk(config('pluginchest.storage.temporary'))->path($this->file->temporary_file);
+        return Storage::disk(config('pluginchest.storage.temporary'))
+                      ->path($this->file->temporary_file);
     }
 
     /**
@@ -128,30 +148,11 @@ class ValidatePluginFile implements ShouldQueue
     public function checkMainClassExists($unzipped, $contents)
     {
         $mainPath = join(DIRECTORY_SEPARATOR, collect($unzipped)
-                ->merge(explode('.', $contents->get('main')))
-                ->toArray());
+                  ->merge(explode('.', $contents->get('main')))
+                  ->toArray());
 
         if (!file_exists($mainPath . '.class')) {
             $this->errors->push("The main class defined in plugin.yml could not be located.");
         }
-    }
-
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
-    public function handle()
-    {
-        $unzipped = $this->unzip();
-        $contents = $this->getYamlContents($unzipped);
-
-        $this->checkYamlEntries($contents);
-        $this->checkMainClassExists($unzipped, $contents);
-
-        $this->file->update([
-            'validation_errors' => $this->errors->isEmpty() ? null : $this->errors->toJson(),
-            'validated_at' => $this->errors->isEmpty() ? now() : null,
-        ]);
     }
 }

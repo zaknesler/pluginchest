@@ -32,13 +32,35 @@ class StorePluginFile implements ShouldQueue
     }
 
     /**
+     * Execute the job.
+     *
+     * @return void
+     */
+    public function handle()
+    {
+        $name = str_random(16);
+        $size = filesize($this->getFileFullPath());
+
+        Storage::disk(config('pluginchest.storage.validated'))
+               ->put($name, file_get_contents($this->getFileFullPath()));
+
+        $this->cleanUp();
+        $this->file->update([
+            'file_name' => $name,
+            'file_size' => $size,
+            'temporary_file' => null,
+        ]);
+    }
+
+    /**
      * Get the full path to the directory of the plugin file.
      *
      * @return string
      */
     private function getWorkingDirectory()
     {
-        return Storage::disk(config('pluginchest.storage.temporary'))->path($this->file->temporary_file);
+        return Storage::disk(config('pluginchest.storage.temporary'))
+                      ->path($this->file->temporary_file);
     }
 
     /**
@@ -58,26 +80,7 @@ class StorePluginFile implements ShouldQueue
      */
     private function cleanUp()
     {
-        Storage::disk(config('pluginchest.storage.temporary'))->deleteDirectory($this->file->temporary_file);
-    }
-
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
-    public function handle()
-    {
-        $name = str_random(16);
-        $size = filesize($this->getFileFullPath());
-
-        Storage::disk(config('pluginchest.storage.validated'))->put($name, file_get_contents($this->getFileFullPath()));
-
-        $this->cleanUp();
-        $this->file->update([
-            'file_name' => $name,
-            'file_size' => $size,
-            'temporary_file' => null,
-        ]);
+        Storage::disk(config('pluginchest.storage.temporary'))
+               ->deleteDirectory($this->file->temporary_file);
     }
 }
