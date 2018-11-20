@@ -55,7 +55,7 @@ class PluginController extends Controller
 
         $plugin->users()->attach(request()->user(), ['role' => 'owner']);
 
-        return redirect(route('plugins.show', [$plugin->slug, $plugin]));
+        return redirect($plugin->getUrl());
     }
 
     /**
@@ -79,7 +79,11 @@ class PluginController extends Controller
      */
     public function edit(Plugin $plugin)
     {
-        //
+        $this->authorize('update', $plugin);
+
+        // $plugin->load('users');
+
+        return view('plugins.edit', compact('plugin'));
     }
 
     /**
@@ -91,7 +95,19 @@ class PluginController extends Controller
      */
     public function update(Request $request, Plugin $plugin)
     {
-        //
+        $this->authorize('update', $plugin);
+
+        $request->validate([
+            'name' => 'required|min:5',
+            'description' => 'required|min:20',
+        ]);
+
+        $plugin->update([
+            'name' => request('name'),
+            'description' => request('description'),
+        ]);
+
+        return redirect($plugin->getUrl());
     }
 
     /**

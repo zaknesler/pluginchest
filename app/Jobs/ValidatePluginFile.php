@@ -7,6 +7,7 @@ use App\Models\PluginFile;
 use App\Jobs\StorePluginFile;
 use Illuminate\Bus\Queueable;
 use Symfony\Component\Yaml\Yaml;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\InteractsWithQueue;

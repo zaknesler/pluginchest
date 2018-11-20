@@ -53,6 +53,16 @@ class Plugin extends Model
     }
 
     /**
+     * Get the URL to view a plugin.
+     *
+     * @return string
+     */
+    public function getUrl()
+    {
+        return route('plugins.show', [$this->slug, $this->id]);
+    }
+
+    /**
      * Get the plugin's total downloads by adding downloads for each file.
      *
      * @return string
