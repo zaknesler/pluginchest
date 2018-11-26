@@ -19,6 +19,7 @@ class CreatePluginsTable extends Migration
             $table->string('slug');
             $table->text('description');
             $table->timestamp('published_at')->nullable()->default(null);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

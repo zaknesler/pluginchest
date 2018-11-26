@@ -15,13 +15,11 @@ class PluginFileDownloadController extends Controller
      *
      * @param  \App\Models\Plugin $plugin
      * @param  \App\Models\PluginFile $pluginFile
-     * @return \DownloadResponse
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
      */
     public function show(Plugin $plugin, PluginFile $pluginFile)
     {
-        $file = Storage::disk(config('pluginchest.storage.validated'))
-                ->download($pluginFile->file_name, studly_case($plugin->name) . '.jar');
-
-        return $file;
+        return Storage::disk(config('pluginchest.storage.validated'))
+                      ->download($pluginFile->file_name, studly_case($plugin->name) . '.jar');
     }
 }

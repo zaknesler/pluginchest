@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
-use App\Models\PluginFile;
 use App\Models\Pivots\PluginUser;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Plugin extends Model
 {
+    use SoftDeletes;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -84,6 +86,21 @@ class Plugin extends Model
     }
 
     /**
+     * Determine if a plugin has a user attached with a specific role
+     *
+     * @param  \App\Models\User $user
+     * @param  array|string $role
+     * @return mixed
+     */
+    public function hasUserWithRole(User $user, $role)
+    {
+        return $this->users()
+                    ->where('user_id', $user->id)
+                    ->whereIn('role', collect($role))
+                    ->exists();
+    }
+
+    /**
      * A plugin belongs to many users.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -91,8 +108,8 @@ class Plugin extends Model
     public function users()
     {
         return $this->belongsToMany(User::class)
-            ->using(PluginUser::class)
-            ->withPivot('role');
+                    ->using(PluginUser::class)
+                    ->withPivot('role');
     }
 
     /**

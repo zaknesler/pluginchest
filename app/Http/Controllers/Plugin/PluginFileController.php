@@ -35,7 +35,7 @@ class PluginFileController extends Controller
      *
      * @param  \App\Models\Plugin  $plugin
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Plugin $plugin, Request $request)
     {

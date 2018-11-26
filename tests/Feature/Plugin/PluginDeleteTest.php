@@ -12,7 +12,7 @@ class PluginDeleteTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    function plugin_can_be_deleted()
+    function plugin_can_be_soft_deleted()
     {
         $this->withoutExceptionHandling();
 
@@ -21,7 +21,7 @@ class PluginDeleteTest extends TestCase
 
         $response = $this->delete(route('plugins.destroy', [$plugin->slug, $plugin->id]));
 
-        $response->assertSuccessful();
+        $response->assertRedirect(route('home'));
         $this->assertEquals(0, Plugin::count());
     }
 }

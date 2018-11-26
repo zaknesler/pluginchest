@@ -58,4 +58,18 @@ class PluginTest extends TestCase
 
         $this->assertEquals(42, $plugin->total_downloads_count);
     }
+
+    /** @test */
+    function can_determine_if_plugin_has_user_with_role()
+    {
+        $plugin = factory(Plugin::class)->create();
+
+        $plugin->users()->attach($userA = factory(User::class)->create(), ['role' => 'owner']);
+        $userB = factory(User::class)->create();
+
+        $this->assertTrue($plugin->hasUserWithRole($userA, 'owner'));
+        $this->assertTrue($plugin->hasUserWithRole($userA, ['owner', 'author']));
+        $this->assertFalse($plugin->hasUserWithRole($userB, 'owner'));
+        $this->assertFalse($plugin->hasUserWithRole($userB, ['owner', 'author']));
+    }
 }
