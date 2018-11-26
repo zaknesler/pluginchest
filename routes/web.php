@@ -21,6 +21,7 @@ Route::middleware(ValidateUriSlug::class)->group(function () {
     Route::get('/plugins/{plugin_slug}/{plugin}', 'Plugin\PluginController@show')->name('plugins.show');
     Route::get('/plugins/{plugin_slug}/{plugin}/edit', 'Plugin\PluginController@edit')->name('plugins.edit');
     Route::patch('/plugins/{plugin_slug}/{plugin}', 'Plugin\PluginController@update')->name('plugins.update');
+    Route::delete('/plugins/{plugin_slug}/{plugin}', 'Plugin\PluginController@destroy')->name('plugins.destroy');
     Route::post('/plugins/{plugin_slug}/{plugin}/files', 'Plugin\PluginFileController@store')->name('plugins.files.store');
     Route::get('/plugins/{plugin_slug}/{plugin}/files/{pluginFile}/download', 'Plugin\PluginFileDownloadController@show')->name('plugins.files.download');
 });

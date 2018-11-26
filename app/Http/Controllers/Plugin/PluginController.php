@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Plugin;
 use App\Models\Plugin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Plugin\StorePlugin;
 
 class PluginController extends Controller
 {
@@ -38,7 +37,7 @@ class PluginController extends Controller
      * Store a newly created plugin in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -76,12 +75,12 @@ class PluginController extends Controller
      *
      * @param  \App\Models\Plugin  $plugin
      * @return \Illuminate\Http\Response
+     *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function edit(Plugin $plugin)
     {
         $this->authorize('update', $plugin);
-
-        // $plugin->load('users');
 
         return view('plugins.edit', compact('plugin'));
     }
@@ -91,7 +90,9 @@ class PluginController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Plugin  $plugin
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(Request $request, Plugin $plugin)
     {
@@ -114,10 +115,16 @@ class PluginController extends Controller
      * Remove the specified plugin from storage.
      *
      * @param  \App\Models\Plugin  $plugin
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function destroy(Plugin $plugin)
     {
-        //
+        $this->authorize('delete', $plugin);
+
+        $plugin->delete();
+
+        return redirect(route('home'));
     }
 }

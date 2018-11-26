@@ -17,12 +17,22 @@
                 @include('layouts/partials/_header')
             @endif
 
+            @hasSection('content-wide')
+                <div class="w-full p-6">
+                    @yield('content-wide')
+                </div>
+            @endif
+
             @hasSection('content-full')
                 @yield('content-full')
             @endif
 
             @hasSection('content')
-                @include('layouts/partials/_content')
+                <div class="w-full p-6">
+                    <div class="max-w-lg mx-auto">
+                        @yield('content')
+                    </div>
+                </div>
             @endif
         </div>
     </body>
