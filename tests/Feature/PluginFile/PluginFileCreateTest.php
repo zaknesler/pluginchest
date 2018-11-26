@@ -1,9 +1,8 @@
 <?php
 
-namespace Tests\Feature\Plugin\File;
+namespace Tests\Feature\PluginFile;
 
 use Tests\TestCase;
-use App\Models\User;
 use App\Models\Plugin;
 use App\Models\PluginFile;
 use App\Jobs\StorePluginFile;
@@ -13,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class PluginFileTest extends TestCase
+class PluginFileCreateTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -97,32 +96,7 @@ class PluginFileTest extends TestCase
         $this->assertEmpty(Storage::disk(config('pluginchest.storage.temporary'))->files());
     }
 
-    /** @test */
-    function plugin_file_can_be_downloaded_and_can_increment_total_downloads_count()
-    {
-        Storage::fake(config('pluginchest.storage.temporary'));
-        Storage::fake(config('pluginchest.storage.validated'));
-
-        $plugin = factory(Plugin::class)->create(['name' => 'Test Plugin']);
-        $plugin->users()->attach($this->authenticate());
-
-        $this->post(route('plugins.files.store', [$plugin->slug, $plugin->id]), [
-            'name' => 'Test Plugin File',
-            'description' => 'This is a test plugin file.',
-            'stage' => 'release',
-            'game_version' => '1.12.2',
-            'plugin_file' => $this->getValidPluginFile(),
-        ]);
-
-        $pluginFile = PluginFile::first();
-
-        $response = $this->get(route('plugins.files.download', [$pluginFile->plugin->slug, $pluginFile->plugin->id, $pluginFile->id]));
-
-        $response->assertHeader('content-disposition', 'attachment; filename=TestPlugin.jar');
-        $response->assertSuccessful();
-    }
-
-    /** @test */
+     /** @test */
     function user_must_be_authenticated_to_create_a_plugin_file()
     {
         $response = $this->post(route('plugins.store'), [
@@ -222,7 +196,7 @@ class PluginFileTest extends TestCase
             'game_version' => '1.12.2',
             'plugin_file' => null,
         ]);
-
+        
         $response->assertSessionHasErrors('plugin_file');
         $this->assertEquals(0, PluginFile::count());
     }

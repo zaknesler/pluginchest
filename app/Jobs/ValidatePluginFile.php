@@ -35,6 +35,7 @@ class ValidatePluginFile implements ShouldQueue
     /**
      * Create a new job instance.
      *
+     * @param  \App\Models\PluginFile $file
      * @return void
      */
     public function __construct(PluginFile $file)

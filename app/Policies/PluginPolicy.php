@@ -57,7 +57,10 @@ class PluginPolicy
      */
     public function delete(User $user, Plugin $plugin)
     {
-        //
+        return $plugin->users()
+                      ->where('role', 'owner')
+                      ->where('user_id', $user->id)
+                      ->count();
     }
 
     /**

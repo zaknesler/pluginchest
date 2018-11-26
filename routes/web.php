@@ -15,6 +15,7 @@ use App\Http\Middleware\Plugin\ValidateUriSlug;
 
 Route::get('/plugins', 'Plugin\PluginController@index')->name('plugins.index');
 Route::post('/plugins', 'Plugin\PluginController@store')->name('plugins.store');
+Route::delete('/plugins', 'Plugin\PluginController@destroy')->name('plugins.destroy');
 Route::get('/plugins/create', 'Plugin\PluginController@create')->name('plugins.create');
 
 Route::middleware(ValidateUriSlug::class)->group(function () {
