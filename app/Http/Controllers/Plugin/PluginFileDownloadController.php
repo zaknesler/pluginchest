@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Plugin;
 
 use App\Models\Plugin;
 use App\Models\PluginFile;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 

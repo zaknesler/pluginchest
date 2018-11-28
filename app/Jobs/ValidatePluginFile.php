@@ -94,10 +94,14 @@ class ValidatePluginFile implements ShouldQueue
     {
         $extractTo = join(DIRECTORY_SEPARATOR, [$this->getWorkingDirectory(), 'unzip']);
 
-        $zip = new ZipArchive;
-        $zip->open($this->getFileFullPath());
-        $zip->extractTo($extractTo);
-        $zip->close();
+        try {
+            $zip = new ZipArchive;
+            $zip->open($this->getFileFullPath());
+            $zip->extractTo($extractTo);
+            $zip->close();
+        } catch (\Exception $e) {
+            $this->errors->push($e->getMessage());
+        }
 
         return $extractTo;
     }
@@ -135,7 +139,7 @@ class ValidatePluginFile implements ShouldQueue
 
         $contents->each(function ($key, $value) {
             if (empty($value)) {
-                $this->errors->push("Invalid plugin.yml: $key is null");
+                $this->errors->push("Invalid plugin.yml: $key is empty.");
             }
         });
     }

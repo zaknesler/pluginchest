@@ -4,7 +4,6 @@ namespace Tests\Feature\Plugin;
 
 use Tests\TestCase;
 use App\Models\Plugin;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class PluginDeleteTest extends TestCase
@@ -14,8 +13,6 @@ class PluginDeleteTest extends TestCase
     /** @test */
     function plugin_can_be_soft_deleted()
     {
-        $this->withoutExceptionHandling();
-
         $plugin = factory(Plugin::class)->create();
         $plugin->users()->attach($user = $this->authenticate(), ['role' => 'owner']);
 
