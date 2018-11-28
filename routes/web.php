@@ -23,6 +23,7 @@ Route::middleware(StripPluginSlug::class)->group(function () {
     Route::patch('/plugins/{plugin_slug}/{plugin}', 'Plugin\PluginController@update')->name('plugins.update');
     Route::delete('/plugins/{plugin_slug}/{plugin}', 'Plugin\PluginController@destroy')->name('plugins.destroy');
     Route::post('/plugins/{plugin_slug}/{plugin}/files', 'Plugin\PluginFileController@store')->name('plugins.files.store');
+    Route::get('/plugins/{plugin_slug}/{plugin}/files/create', 'Plugin\PluginFileController@create')->name('plugins.files.create');
     Route::get('/plugins/{plugin_slug}/{plugin}/files/{pluginFile}/download', 'Plugin\PluginFileDownloadController@show')->name('plugins.files.download');
 });
 

@@ -11,6 +11,21 @@ use App\Http\Controllers\Controller;
 class PluginFileController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware(['auth', 'verified'], [
+            'except' => [
+                'index',
+                'show',
+            ],
+        ]);
+    }
+
+    /**
      * Display a listing of the file.
      *
      * @return \Illuminate\Http\Response
@@ -23,11 +38,16 @@ class PluginFileController extends Controller
     /**
      * Show the form for creating a new file.
      *
+     * @param  \App\Models\Plugin $plugin
      * @return \Illuminate\Http\Response
+     *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function create()
+    public function create(Plugin $plugin)
     {
-        //
+        $this->authorize('createPluginFile', $plugin);
+
+        return view('plugins.files.create');
     }
 
     /**
@@ -39,6 +59,8 @@ class PluginFileController extends Controller
      */
     public function store(Plugin $plugin, Request $request)
     {
+        // TODO: Authorize user
+
         $request->validate([
             'name' => 'required|min:2',
             'description' => 'required|min:20',

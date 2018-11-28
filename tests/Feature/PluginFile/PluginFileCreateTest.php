@@ -17,6 +17,40 @@ class PluginFileCreateTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    function plugin_file_create_form_can_only_be_viewed_by_user_with_owner_role()
+    {
+        $plugin = factory(Plugin::class)->create();
+        $plugin->users()->attach($this->authenticate(), ['role' => 'owner']);
+
+        $response = $this->get(route('plugins.files.create', [$plugin->slug, $plugin->id]));
+
+        $response->assertSuccessful();
+        $response->assertViewIs('plugins.files.create');
+    }
+
+    /** @test */
+    function plugin_file_create_form_can_only_be_viewed_by_user_with_author_role()
+    {
+        $plugin = factory(Plugin::class)->create();
+        $plugin->users()->attach($this->authenticate(), ['role' => 'author']);
+
+        $response = $this->get(route('plugins.files.create', [$plugin->slug, $plugin->id]));
+
+        $response->assertSuccessful();
+        $response->assertViewIs('plugins.files.create');
+    }
+
+     /** @test */
+    function plugin_file_create_form_cannot_be_viewed_by_a_guest()
+    {
+        $plugin = factory(Plugin::class)->create();
+
+        $response = $this->get(route('plugins.files.create', [$plugin->slug, $plugin->id]));
+
+        $response->assertRedirect(route('login'));
+    }
+
+    /** @test */
     function valid_file_can_be_validated_and_stored()
     {
         Storage::fake(config('pluginchest.storage.temporary'));
@@ -196,7 +230,7 @@ class PluginFileCreateTest extends TestCase
             'game_version' => '1.12.2',
             'plugin_file' => null,
         ]);
-        
+
         $response->assertSessionHasErrors('plugin_file');
         $this->assertEquals(0, PluginFile::count());
     }

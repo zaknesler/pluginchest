@@ -33,4 +33,16 @@ class PluginPolicy
     {
         return $plugin->hasUserWithRole($user, 'owner');
     }
+
+    /**
+     * Determine whether the user can create a plugin file.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Plugin  $plugin
+     * @return mixed
+     */
+    public function createPluginFile(User $user, Plugin $plugin)
+    {
+        return $plugin->hasUserWithRole($user, ['owner', 'author']);
+    }
 }
