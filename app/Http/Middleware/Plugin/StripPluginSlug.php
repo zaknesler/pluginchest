@@ -4,7 +4,7 @@ namespace App\Http\Middleware\Plugin;
 
 use Closure;
 
-class ValidateUriSlug
+class StripPluginSlug
 {
     /**
      * Handle an incoming request.

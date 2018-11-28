@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Middleware\Plugin\ValidateUriSlug;
+use App\Http\Middleware\Plugin\StripPluginSlug;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,7 +17,7 @@ Route::get('/plugins', 'Plugin\PluginController@index')->name('plugins.index');
 Route::post('/plugins', 'Plugin\PluginController@store')->name('plugins.store');
 Route::get('/plugins/create', 'Plugin\PluginController@create')->name('plugins.create');
 
-Route::middleware(ValidateUriSlug::class)->group(function () {
+Route::middleware(StripPluginSlug::class)->group(function () {
     Route::get('/plugins/{plugin_slug}/{plugin}', 'Plugin\PluginController@show')->name('plugins.show');
     Route::get('/plugins/{plugin_slug}/{plugin}/edit', 'Plugin\PluginController@edit')->name('plugins.edit');
     Route::patch('/plugins/{plugin_slug}/{plugin}', 'Plugin\PluginController@update')->name('plugins.update');
