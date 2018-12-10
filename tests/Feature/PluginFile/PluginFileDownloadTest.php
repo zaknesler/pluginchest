@@ -20,7 +20,7 @@ class PluginFileDownloadTest extends TestCase
         Storage::fake(config('pluginchest.storage.validated'));
 
         $plugin = factory(Plugin::class)->create(['name' => 'Test Plugin']);
-        $plugin->users()->attach($this->authenticate());
+        $plugin->users()->attach($this->authenticate(), ['role' => 'owner']);
 
         $this->post(route('plugins.files.store', [$plugin->slug, $plugin->id]), [
             'name' => 'Test Plugin File',

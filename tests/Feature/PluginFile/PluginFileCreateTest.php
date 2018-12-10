@@ -57,7 +57,7 @@ class PluginFileCreateTest extends TestCase
         Storage::fake(config('pluginchest.storage.validated'));
 
         $plugin = factory(Plugin::class)->create();
-        $plugin->users()->attach($user = $this->authenticate());
+        $plugin->users()->attach($user = $this->authenticate(), ['role' => 'owner']);
 
         $response = $this->post(route('plugins.files.store', [$plugin->slug, $plugin->id]), [
             'name' => 'Test Plugin File',
@@ -85,7 +85,7 @@ class PluginFileCreateTest extends TestCase
         Queue::fake();
 
         $plugin = factory(Plugin::class)->create();
-        $plugin->users()->attach($user = $this->authenticate());
+        $plugin->users()->attach($user = $this->authenticate(), ['role' => 'owner']);
 
         $response = $this->post(route('plugins.files.store', [$plugin->slug, $plugin->id]), [
             'name' => 'Test Plugin File',
@@ -110,7 +110,7 @@ class PluginFileCreateTest extends TestCase
         Storage::fake(config('pluginchest.storage.validated'));
 
         $plugin = factory(Plugin::class)->create();
-        $plugin->users()->attach($user = $this->authenticate());
+        $plugin->users()->attach($user = $this->authenticate(), ['role' => 'owner']);
 
         $response = $this->post(route('plugins.files.store', [$plugin->slug, $plugin->id]), [
             'name' => 'Test Plugin File',
@@ -149,7 +149,7 @@ class PluginFileCreateTest extends TestCase
     function plugin_file_must_have_a_valid_name()
     {
         $plugin = factory(Plugin::class)->create(['name' => 'Test Plugin']);
-        $plugin->users()->attach($this->authenticate());
+        $plugin->users()->attach($this->authenticate(), ['role' => 'owner']);
 
         $response = $this->post(route('plugins.files.store', [$plugin->slug, $plugin->id]), [
             'name' => '',
@@ -167,7 +167,7 @@ class PluginFileCreateTest extends TestCase
     function plugin_file_must_have_a_valid_description()
     {
         $plugin = factory(Plugin::class)->create(['name' => 'Test Plugin']);
-        $plugin->users()->attach($this->authenticate());
+        $plugin->users()->attach($this->authenticate(), ['role' => 'owner']);
 
         $response = $this->post(route('plugins.files.store', [$plugin->slug, $plugin->id]), [
             'name' => 'Valid name',
@@ -185,7 +185,7 @@ class PluginFileCreateTest extends TestCase
     function plugin_file_must_have_a_valid_file_stage()
     {
         $plugin = factory(Plugin::class)->create(['name' => 'Test Plugin']);
-        $plugin->users()->attach($this->authenticate());
+        $plugin->users()->attach($this->authenticate(), ['role' => 'owner']);
 
         $response = $this->post(route('plugins.files.store', [$plugin->slug, $plugin->id]), [
             'name' => 'Valid name',
@@ -203,7 +203,7 @@ class PluginFileCreateTest extends TestCase
     function plugin_file_must_have_a_valid_game_version()
     {
         $plugin = factory(Plugin::class)->create(['name' => 'Test Plugin']);
-        $plugin->users()->attach($this->authenticate());
+        $plugin->users()->attach($this->authenticate(), ['role' => 'owner']);
 
         $response = $this->post(route('plugins.files.store', [$plugin->slug, $plugin->id]), [
             'name' => 'Valid name',
@@ -221,7 +221,7 @@ class PluginFileCreateTest extends TestCase
     function plugin_file_must_have_a_valid_file()
     {
         $plugin = factory(Plugin::class)->create(['name' => 'Test Plugin']);
-        $plugin->users()->attach($this->authenticate());
+        $plugin->users()->attach($this->authenticate(), ['role' => 'owner']);
 
         $response = $this->post(route('plugins.files.store', [$plugin->slug, $plugin->id]), [
             'name' => 'Valid name',

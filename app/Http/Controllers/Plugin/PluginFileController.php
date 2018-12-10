@@ -59,7 +59,7 @@ class PluginFileController extends Controller
      */
     public function store(Plugin $plugin, Request $request)
     {
-        // TODO: Authorize user
+        $this->authorize('createPluginFile', $plugin);
 
         $request->validate([
             'name' => 'required|min:2',
@@ -90,7 +90,7 @@ class PluginFileController extends Controller
      */
     public function show(PluginFile $pluginFile)
     {
-        //
+        // Ensure plugin file is approved.
     }
 
     /**
