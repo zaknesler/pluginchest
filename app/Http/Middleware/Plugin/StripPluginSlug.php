@@ -15,7 +15,7 @@ class StripPluginSlug
      */
     public function handle($request, Closure $next)
     {
-        abort_unless($request->plugin->slug == $request->plugin_slug, 404);
+        abort_unless(optional($request->plugin)->slug == $request->plugin_slug, 404);
 
         $request->route()->forgetParameter('plugin_slug');
 

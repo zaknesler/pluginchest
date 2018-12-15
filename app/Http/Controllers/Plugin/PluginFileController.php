@@ -7,6 +7,7 @@ use App\Models\PluginFile;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 
 class PluginFileController extends Controller
 {
@@ -79,7 +80,7 @@ class PluginFileController extends Controller
 
         $file->store(request()->file('plugin_file'));
 
-        return redirect()->route('plugins.show', [$plugin->slug, $plugin->id]);
+        return redirect($plugin->getUrl());
     }
 
     /**
@@ -119,11 +120,18 @@ class PluginFileController extends Controller
     /**
      * Remove the specified file from storage.
      *
+     * @param  \App\Models\Plugin  $plugin
      * @param  \App\Models\PluginFile  $pluginFile
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PluginFile $pluginFile)
+    public function destroy(Plugin $plugin, PluginFile $pluginFile)
     {
-        //
+        $this->authorize('delete', $pluginFile);
+
+        Storage::disk(config('pluginchest.storage.validated'))->delete($pluginFile->file_name);
+
+        $pluginFile->delete();
+
+        return redirect($plugin->getUrl());
     }
 }
