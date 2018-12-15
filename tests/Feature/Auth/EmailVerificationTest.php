@@ -92,7 +92,7 @@ class EmailVerificationTest extends TestCase {
 
         $response = $this->actingAs($user)->get($this->validVerificationVerifyRoute(2));
 
-        $response->assertRedirect($this->successfulVerificationRoute());
+        $response->assertStatus(403);
     }
 
     /** @test */
