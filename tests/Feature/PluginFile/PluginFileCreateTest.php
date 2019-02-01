@@ -123,7 +123,7 @@ class PluginFileCreateTest extends TestCase
         $response->assertSessionHasNoErrors();
         $this->assertNotNull($pluginFile = $plugin->files()->first());
         $this->assertNotNull($pluginFile->validation_errors);
-        $this->assertNull($pluginFile->validated_at);
+        $this->assertNotNull($pluginFile->validated_at);
         $this->assertNotNull($pluginFile->file_name);
         $this->assertNotNull($pluginFile->file_size);
         $this->assertTrue(Storage::disk(config('pluginchest.storage.validated'))->has($pluginFile->file_name));

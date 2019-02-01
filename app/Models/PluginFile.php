@@ -54,6 +54,16 @@ class PluginFile extends Model
     }
 
     /**
+     * Determine if a plugin file has been approved.
+     *
+     * @return boolean
+     */
+    public function isApproved()
+    {
+        return !is_null($this->approved_at);
+    }
+
+    /**
      * Temporarily store file and dispatch jobs to validate and store it.
      *
      * @param  \Illuminate\Http\UploadedFile  $file

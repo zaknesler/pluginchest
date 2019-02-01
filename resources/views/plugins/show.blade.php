@@ -27,13 +27,46 @@
             </div>
 
             <div class="w-full md:w-1/3 mt-3 md:mt-0 md:ml-3">
-                <example-component title="Users">
-                    <ul class="list-reset">
-                        @foreach ($plugin->users as $user)
-                            <li><span class="font-semibold">{{ $user->username }}</span> <span class="text-xs text-grey-dark">({{ $user->pivot->role }})</span></li>
-                        @endforeach
-                    </ul>
-                </example-component>
+                <div class="w-full">
+                    <div class="border rounded">
+                        <div class="border-b bg-grey-lightest rounded-t text-grey-darker font-semibold px-4 py-3">Users</div>
+
+                        <div class="bg-white rounded-b p-4">
+                            <ul class="list-reset">
+                                @foreach ($plugin->users as $user)
+                                    <li><span class="font-semibold">{{ $user->username }}</span> <span class="text-xs text-grey-dark">({{ $user->pivot->role }})</span></li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full mt-8">
+                    <div class="border rounded">
+                        <div class="flex items-baseline justify-between border-b bg-grey-lightest rounded-t text-grey-darker font-semibold px-4 py-3">
+                            <span>Files</span>
+
+                            <a
+                                class="text-xs font-semibold text-grey-darker hover:text-grey-darkest bg-white border hover:border-grey rounded px-3 py-1 no-underline"
+                                href="{{ route('plugins.files.create', ['slug' => $plugin->slug, 'id' => $plugin->id]) }}"
+                            >
+                                Add File
+                            </a>
+                        </div>
+
+                        <div class="bg-white rounded-b p-4">
+                            <ul class="list-reset">
+                                @if ($plugin->files->count())
+                                    @foreach ($plugin->files as $file)
+                                        <li><span class="font-semibold">{{ $file->name }}</span> <span class="text-xs text-grey-dark">({{ $file->user->username }})</span></li>
+                                    @endforeach
+                                @else
+                                    <li class="text-sm">No files to display.</li>
+                                @endif
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

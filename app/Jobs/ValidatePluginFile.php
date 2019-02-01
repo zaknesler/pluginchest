@@ -60,7 +60,7 @@ class ValidatePluginFile implements ShouldQueue
 
         $this->file->update([
             'validation_errors' => $this->errors->isEmpty() ? null : $this->errors->toJson(),
-            'validated_at' => $this->errors->isEmpty() ? now() : null,
+            'validated_at' => now(),
         ]);
     }
 

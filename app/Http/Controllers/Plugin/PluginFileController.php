@@ -48,7 +48,7 @@ class PluginFileController extends Controller
     {
         $this->authorize('createPluginFile', $plugin);
 
-        return view('plugins.files.create');
+        return view('plugins.files.create', compact('plugin'));
     }
 
     /**
