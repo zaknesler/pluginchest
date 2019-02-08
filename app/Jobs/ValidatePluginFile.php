@@ -55,8 +55,10 @@ class ValidatePluginFile implements ShouldQueue
         $unzipped = $this->unzip();
         $contents = $this->getYamlContents($unzipped);
 
-        $this->checkYamlEntries($contents);
-        $this->checkMainClassExists($unzipped, $contents);
+        if (!is_null($contents)) {
+            $this->checkYamlEntries($contents);
+            $this->checkMainClassExists($unzipped, $contents);
+        }
 
         $this->file->update([
             'validation_errors' => $this->errors->isEmpty() ? null : $this->errors->toJson(),

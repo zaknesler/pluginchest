@@ -65,7 +65,12 @@ class PluginController extends Controller
      */
     public function show(Plugin $plugin)
     {
-        $plugin->load(['users', 'files']);
+        $plugin->load([
+            'users',
+            'files' => function ($query) {
+                return $query->latest();
+            }
+        ]);
 
         return view('plugins.show', compact('plugin'));
     }

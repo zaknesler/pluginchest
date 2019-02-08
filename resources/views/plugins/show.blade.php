@@ -46,12 +46,14 @@
                         <div class="flex items-baseline justify-between border-b bg-grey-lightest rounded-t text-grey-darker font-semibold px-4 py-3">
                             <span>Files</span>
 
-                            <a
-                                class="text-xs font-semibold text-grey-darker hover:text-grey-darkest bg-white border hover:border-grey rounded px-3 py-1 no-underline"
-                                href="{{ route('plugins.files.create', ['slug' => $plugin->slug, 'id' => $plugin->id]) }}"
-                            >
-                                Add File
-                            </a>
+                            @can ('createPluginFile', $plugin)
+                                <a
+                                    class="text-xs font-semibold text-grey-darker hover:text-grey-darkest bg-white border hover:border-grey rounded px-3 py-1 no-underline"
+                                    href="{{ route('plugins.files.create', ['slug' => $plugin->slug, 'id' => $plugin->id]) }}"
+                                >
+                                    Add File
+                                </a>
+                            @endcan
                         </div>
 
                         <div class="bg-white rounded-b p-4">
