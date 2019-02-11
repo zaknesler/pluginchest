@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use App\Jobs\StorePluginFile;
 use App\Scanners\FileScanner;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\InteractsWithQueue;
@@ -16,6 +17,13 @@ use Illuminate\Foundation\Bus\Dispatchable;
 class ScanPluginFileForViruses implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    /**
+     * The number of seconds the job can run before timing out.
+     *
+     * @var int
+     */
+    public $timeout = 300;
 
     /**
      * Plugin file model.
@@ -50,6 +58,26 @@ class ScanPluginFileForViruses implements ShouldQueue
      * @return void
      */
     public function handle()
+    {
+        if (app()->environment() == 'testing') {
+            $this->performScan();
+
+            return;
+        }
+
+        Redis::throttle('process-plugin-files')->allow(4)->every(60)->block(60)->then(function () {
+            $this->performScan();
+        }, function () {
+            return $this->release(10);
+        });
+    }
+
+    /**
+     * Perform the scan on the file.
+     *
+     * @return void
+     */
+    private function performScan()
     {
         $result = app(FileScanner::class)->scan($this->getFileFullPath());
 

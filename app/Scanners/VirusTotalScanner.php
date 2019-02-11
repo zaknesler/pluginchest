@@ -16,10 +16,12 @@ class VirusTotalScanner implements FileScanner
     {
         $result = (new VirusScanner)->scanFile($path)->checkResult();
 
-        return new ScanResult(
-            $result->positives,
-            $result->total,
-            $result->scans
-        );
+        if ($result) {
+            return new ScanResult(
+                $result->positives,
+                $result->total,
+                $result->scans
+            );
+        }
     }
 }
