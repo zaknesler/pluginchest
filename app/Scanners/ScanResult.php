@@ -16,7 +16,7 @@ class ScanResult
      *
      * @var int
      */
-    public $totalScans;
+    public $total;
 
     /**
      * Array of all scans performed.
@@ -29,13 +29,13 @@ class ScanResult
      * Create new scan result.
      *
      * @param int  $positives
-     * @param int  $totalScans
+     * @param int  $total
      * @param array  $scans
      */
-    public function __construct($positives, $totalScans, $scans)
+    public function __construct($positives, $total, $scans)
     {
         $this->positives = $positives;
-        $this->totalScans = $totalScans;
+        $this->total = $total;
         $this->scans = $scans;
     }
 }
