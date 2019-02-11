@@ -83,7 +83,7 @@ class PluginFile extends Model
         ScanPluginFileForViruses::dispatch($this)->chain([
             new ValidatePluginFile($this),
             new StorePluginFile($this),
-        ]);
+        ])->allOnConnection('redis')->allOnQueue('plugins.files.processes');
     }
 
     public function addValidationErrors(Collection $errors)

@@ -7,6 +7,8 @@ use Illuminate\Support\Str;
 use App\Jobs\StorePluginFile;
 use App\Scanners\FileScanner;
 use Illuminate\Bus\Queueable;
+use App\Scanners\FakeFileScanner;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\InteractsWithQueue;
@@ -16,6 +18,13 @@ use Illuminate\Foundation\Bus\Dispatchable;
 class ScanPluginFileForViruses implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    /**
+     * The number of seconds the job can run before timing out.
+     *
+     * @var int
+     */
+    public $timeout = 300;
 
     /**
      * Plugin file model.
@@ -51,15 +60,21 @@ class ScanPluginFileForViruses implements ShouldQueue
      */
     public function handle()
     {
-        $result = app(FileScanner::class)->scan($this->getFileFullPath());
+        Redis::throttle('process-plugin-files')->allow(4)->every(60)->block(60)->then(function () {
+            $result = app(FakeFileScanner::class)->scan($this->getFileFullPath());
 
-        if ($result->positives > 0) {
-            $this->errors->push(
-                "Virus scan returned {$result->positives} of {$result->total} " . Str::plural('positives', $result->positives) . '.'
-            );
-        }
+            if ($result->positives > 0) {
+                $this->errors->push(
+                    "Virus scan returned {$result->positives} of {$result->total} " . Str::plural('positives', $result->positives) . '.'
+                );
+            }
 
-        $this->file->addValidationErrors($this->errors);
+            $this->file->addValidationErrors($this->errors);
+        }, function () {
+            info('Something went wrong with trying to process the job here.');
+
+            return $this->release(10);
+        });
     }
 
     /**
