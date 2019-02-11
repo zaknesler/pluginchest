@@ -60,7 +60,12 @@
                             <ul class="list-reset">
                                 @if ($plugin->files->count())
                                     @foreach ($plugin->files as $file)
-                                        <li><span class="font-semibold">{{ $file->name }}</span> <span class="text-xs text-grey-dark">({{ $file->user->username }})</span></li>
+                                        <li>
+                                            <span class="font-semibold">{{ $file->name }}</span>
+                                            <span class="text-xs text-grey-dark">
+                                                <a class="no-underline text-blue-dark hover:text-blue-darkest" href="{{ $file->getDownloadLink() }}">Download</a>
+                                            </span>
+                                        </li>
                                     @endforeach
                                 @else
                                     <li class="text-sm">No files to display.</li>

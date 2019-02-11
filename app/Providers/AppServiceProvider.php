@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
-use App\Verification\FileVerifier;
+use App\Scanners\FileScanner;
+use App\Scanners\VirusTotalScanner;
 use Illuminate\Support\ServiceProvider;
-use App\Verification\VirusTotalVerifier;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
      * @var array
      */
     public $bindings = [
-        FileVerifier::class => VirusTotalVerifier::class,
+        FileScanner::class => VirusTotalScanner::class,
     ];
 
     /**

@@ -18,6 +18,8 @@ class PluginFileDownloadController extends Controller
      */
     public function show(Plugin $plugin, PluginFile $pluginFile)
     {
+        $pluginFile->increment('downloads_count');
+
         return Storage::disk(config('pluginchest.storage.validated'))
                       ->download($pluginFile->file_name, studly_case($plugin->name) . '.jar');
     }

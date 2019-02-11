@@ -3,12 +3,25 @@
 namespace Tests;
 
 use App\Models\User;
+use App\Scanners\FileScanner;
+use App\Scanners\FakeFileScanner;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        Storage::fake(config('pluginchest.storage.temporary'));
+        Storage::fake(config('pluginchest.storage.validated'));
+
+        $this->app->bind(FileScanner::class, FakeFileScanner::class);
+    }
 
     /**
      * Authenticate as a specified or generated user.

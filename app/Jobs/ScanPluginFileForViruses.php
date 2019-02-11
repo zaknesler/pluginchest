@@ -3,6 +3,9 @@
 namespace App\Jobs;
 
 use App\Models\PluginFile;
+use Illuminate\Support\Str;
+use App\Jobs\StorePluginFile;
+use App\Scanners\FileScanner;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
@@ -10,7 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class StorePluginFile implements ShouldQueue
+class ScanPluginFileForViruses implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -22,13 +25,23 @@ class StorePluginFile implements ShouldQueue
     protected $file;
 
     /**
+     * List of validation errors discovered.
+     *
+     * @var \Illuminate\Support\Collection
+     */
+    protected $errors;
+
+    /**
      * Create a new job instance.
      *
+     * @param  \App\Models\PluginFile $file
      * @return void
      */
     public function __construct(PluginFile $file)
     {
         $this->file = $file;
+
+        $this->errors = collect();
     }
 
     /**
@@ -38,18 +51,15 @@ class StorePluginFile implements ShouldQueue
      */
     public function handle()
     {
-        $name = str_random(16);
-        $size = filesize($this->getFileFullPath());
+        $result = app(FileScanner::class)->scan($this->getFileFullPath());
 
-        Storage::disk(config('pluginchest.storage.validated'))
-               ->put($name, file_get_contents($this->getFileFullPath()));
+        if ($result->positives > 0) {
+            $this->errors->push(
+                "Virus scan returned {$result->positives} of {$result->total} " . Str::plural('positives', $result->positives) . '.'
+            );
+        }
 
-        $this->cleanUp();
-        $this->file->update([
-            'file_name' => $name,
-            'file_size' => $size,
-            'temporary_file' => null,
-        ]);
+        $this->file->addValidationErrors($this->errors);
     }
 
     /**
@@ -74,16 +84,5 @@ class StorePluginFile implements ShouldQueue
             $this->getFileDirectoryPath(),
             $this->file->temporary_file
         ]);
-    }
-
-    /**
-     * Delete temporary directory.
-     *
-     * @return void
-     */
-    private function cleanUp()
-    {
-        Storage::disk(config('pluginchest.storage.temporary'))
-               ->deleteDirectory($this->file->temporary_file);
     }
 }

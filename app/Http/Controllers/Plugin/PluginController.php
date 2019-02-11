@@ -68,7 +68,9 @@ class PluginController extends Controller
         $plugin->load([
             'users',
             'files' => function ($query) {
-                return $query->latest();
+                return $query->latest()
+                    ->whereNull('validation_errors')
+                    ->hasFile();
             }
         ]);
 
