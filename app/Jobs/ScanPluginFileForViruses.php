@@ -7,7 +7,6 @@ use Illuminate\Support\Str;
 use App\Jobs\StorePluginFile;
 use App\Scanners\FileScanner;
 use Illuminate\Bus\Queueable;
-use App\Scanners\FakeFileScanner;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
@@ -60,21 +59,35 @@ class ScanPluginFileForViruses implements ShouldQueue
      */
     public function handle()
     {
+        if (app()->environment() == 'testing') {
+            $this->performScan();
+
+            return;
+        }
+
         Redis::throttle('process-plugin-files')->allow(4)->every(60)->block(60)->then(function () {
-            $result = app(FakeFileScanner::class)->scan($this->getFileFullPath());
-
-            if ($result->positives > 0) {
-                $this->errors->push(
-                    "Virus scan returned {$result->positives} of {$result->total} " . Str::plural('positives', $result->positives) . '.'
-                );
-            }
-
-            $this->file->addValidationErrors($this->errors);
+            $this->performScan();
         }, function () {
-            info('Something went wrong with trying to process the job here.');
-
             return $this->release(10);
         });
+    }
+
+    /**
+     * Perform the scan on the file.
+     *
+     * @return void
+     */
+    private function performScan()
+    {
+        $result = app(FileScanner::class)->scan($this->getFileFullPath());
+
+        if ($result->positives > 0) {
+            $this->errors->push(
+                "Virus scan returned {$result->positives} of {$result->total} " . Str::plural('positives', $result->positives) . '.'
+            );
+        }
+
+        $this->file->addValidationErrors($this->errors);
     }
 
     /**

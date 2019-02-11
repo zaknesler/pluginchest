@@ -75,17 +75,20 @@ class PluginFile extends Model
      */
     public function store(UploadedFile $file)
     {
-        $name = str_random(8);
-
-        $file->storeAs($name, $name, config('pluginchest.storage.temporary'));
+        $file->storeAs($name = str_random(8), $name, config('pluginchest.storage.temporary'));
         $this->update(['temporary_file' => $name]);
 
         ScanPluginFileForViruses::dispatch($this)->chain([
             new ValidatePluginFile($this),
             new StorePluginFile($this),
-        ])->allOnConnection('redis')->allOnQueue('plugins.files.processes');
+        ])->allOnQueue('plugins.files.processes');
     }
 
+    /**
+     * Add a collection of validation errors to the file.
+     *
+     * @param \Illuminate\Support\Collection  $errors
+     */
     public function addValidationErrors(Collection $errors)
     {
         if ($errors->isEmpty()) {
