@@ -16,9 +16,6 @@ class PluginFileDownloadTest extends TestCase
     /** @test */
     function plugin_file_can_be_downloaded_and_can_increment_total_downloads_count()
     {
-        Storage::fake(config('pluginchest.storage.temporary'));
-        Storage::fake(config('pluginchest.storage.validated'));
-
         $plugin = factory(Plugin::class)->create(['name' => 'Test Plugin']);
         $plugin->users()->attach($this->authenticate(), ['role' => 'owner']);
 
@@ -32,7 +29,7 @@ class PluginFileDownloadTest extends TestCase
 
         $pluginFile = PluginFile::first();
 
-        $response = $this->get(route('plugins.files.download', [$pluginFile->plugin->slug, $pluginFile->plugin->id, $pluginFile->id]));
+        $response = $this->get($pluginFile->getDownloadLink());
 
         $response->assertHeader('content-disposition', 'attachment; filename=TestPlugin.jar');
         $response->assertSuccessful();

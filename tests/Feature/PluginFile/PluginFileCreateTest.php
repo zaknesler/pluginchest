@@ -8,6 +8,7 @@ use App\Models\PluginFile;
 use App\Jobs\StorePluginFile;
 use App\Jobs\ValidatePluginFile;
 use Illuminate\Support\Facades\Queue;
+use App\Jobs\ScanPluginFileForViruses;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -53,9 +54,6 @@ class PluginFileCreateTest extends TestCase
     /** @test */
     function valid_file_can_be_validated_and_stored()
     {
-        Storage::fake(config('pluginchest.storage.temporary'));
-        Storage::fake(config('pluginchest.storage.validated'));
-
         $plugin = factory(Plugin::class)->create();
         $plugin->users()->attach($user = $this->authenticate(), ['role' => 'owner']);
 
@@ -68,7 +66,7 @@ class PluginFileCreateTest extends TestCase
         ]);
 
         $response->assertSessionHasNoErrors();
-        $this->assertNotNull($pluginFile = $plugin->files()->first());
+        $this->assertNotNull($pluginFile = PluginFile::first());
         $this->assertNull($pluginFile->validation_errors);
         $this->assertNotNull($pluginFile->validated_at);
         $this->assertNotNull($pluginFile->file_name);
@@ -80,8 +78,6 @@ class PluginFileCreateTest extends TestCase
     /** @test */
     function plugin_file_uploading_triggers_queue_jobs()
     {
-        Storage::fake(config('pluginchest.storage.temporary'));
-        Storage::fake(config('pluginchest.storage.validated'));
         Queue::fake();
 
         $plugin = factory(Plugin::class)->create();
@@ -95,20 +91,15 @@ class PluginFileCreateTest extends TestCase
             'plugin_file' => $this->getValidPluginFile(),
         ]);
 
-        // https://laracasts.com/discuss/channels/testing/how-to-test-job-chaining-in-laravel-55#reply-455235
-        Queue::assertPushed(ValidatePluginFile::class, function ($job) {
-            return collect($job->chained)->filter(function ($payload) {
-                return strpos($payload, StorePluginFile::class) !== false;
-            })->isNotEmpty();
-        });
+        Queue::assertPushedWithChain(ScanPluginFileForViruses::class, [
+            ValidatePluginFile::class,
+            StorePluginFile::class,
+        ]);
     }
 
     /** @test */
     function file_with_invalid_yml_file_is_not_validated_but_is_still_stored()
     {
-        Storage::fake(config('pluginchest.storage.temporary'));
-        Storage::fake(config('pluginchest.storage.validated'));
-
         $plugin = factory(Plugin::class)->create();
         $plugin->users()->attach($user = $this->authenticate(), ['role' => 'owner']);
 
@@ -121,9 +112,9 @@ class PluginFileCreateTest extends TestCase
         ]);
 
         $response->assertSessionHasNoErrors();
-        $this->assertNotNull($pluginFile = $plugin->files()->first());
+        $this->assertNotNull($pluginFile = PluginFile::first());
         $this->assertNotNull($pluginFile->validation_errors);
-        $this->assertNull($pluginFile->validated_at);
+        $this->assertNotNull($pluginFile->validated_at);
         $this->assertNotNull($pluginFile->file_name);
         $this->assertNotNull($pluginFile->file_size);
         $this->assertTrue(Storage::disk(config('pluginchest.storage.validated'))->has($pluginFile->file_name));

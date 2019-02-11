@@ -17,9 +17,6 @@ class PluginFileDeleteTest extends TestCase
     /** @test */
     function plugin_file_can_be_deleted()
     {
-        Storage::fake(config('pluginchest.storage.temporary'));
-        Storage::fake(config('pluginchest.storage.validated'));
-
         $plugin = factory(Plugin::class)->create(['name' => 'Test Plugin']);
         $plugin->users()->attach($this->authenticate(), ['role' => 'owner']);
 
@@ -43,9 +40,6 @@ class PluginFileDeleteTest extends TestCase
     /** @test */
     function user_must_have_permission_to_delete_plugin_file()
     {
-        Storage::fake(config('pluginchest.storage.temporary'));
-        Storage::fake(config('pluginchest.storage.validated'));
-
         $plugin = factory(Plugin::class)->create(['name' => 'Test Plugin']);
         $plugin->users()->attach($this->authenticate(), ['role' => 'owner']);
 
@@ -64,15 +58,12 @@ class PluginFileDeleteTest extends TestCase
 
         $response->assertStatus(403);
         $this->assertEquals(1, PluginFile::count());
-        $this->assertNotEmpty(Storage::disk(config('pluginchest.storage.validated'))->files());
+        $this->assertCount(1, Storage::disk(config('pluginchest.storage.validated'))->files());
     }
 
     /** @test */
     function guests_cannot_delete_plugin_files()
     {
-        Storage::fake(config('pluginchest.storage.temporary'));
-        Storage::fake(config('pluginchest.storage.validated'));
-
         $plugin = factory(Plugin::class)->create(['name' => 'Test Plugin']);
         $plugin->users()->attach($this->authenticate(), ['role' => 'owner']);
 
@@ -91,6 +82,6 @@ class PluginFileDeleteTest extends TestCase
 
         $response->assertRedirect(route('login'));
         $this->assertEquals(1, PluginFile::count());
-        $this->assertNotEmpty(Storage::disk(config('pluginchest.storage.validated'))->files());
+        $this->assertCount(1, Storage::disk(config('pluginchest.storage.validated'))->files());
     }
 }

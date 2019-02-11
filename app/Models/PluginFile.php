@@ -7,8 +7,11 @@ use App\Models\Plugin;
 use App\Jobs\StorePluginFile;
 use App\Jobs\ValidatePluginFile;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
+use App\Jobs\ScanPluginFileForViruses;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Builder;
 
 class PluginFile extends Model
 {
@@ -40,6 +43,7 @@ class PluginFile extends Model
      */
     protected $casts = [
         'approved_at' => 'timestamp',
+        'validation_errors' => 'collection',
     ];
 
     /**
@@ -51,6 +55,16 @@ class PluginFile extends Model
     public function scopeHasFile($query)
     {
         return $query->whereNotNull('file_name');
+    }
+
+    /**
+     * Determine if a plugin file has been approved.
+     *
+     * @return boolean
+     */
+    public function isApproved()
+    {
+        return !is_null($this->approved_at);
     }
 
     /**
@@ -66,9 +80,20 @@ class PluginFile extends Model
         $file->storeAs($name, $name, config('pluginchest.storage.temporary'));
         $this->update(['temporary_file' => $name]);
 
-        ValidatePluginFile::dispatch($this)->chain([
+        ScanPluginFileForViruses::dispatch($this)->chain([
+            new ValidatePluginFile($this),
             new StorePluginFile($this),
         ]);
+    }
+
+    public function addValidationErrors(Collection $errors)
+    {
+        if ($errors->isEmpty()) {
+            return;
+        }
+
+        $this->validation_errors = $errors->merge($this->validation_errors);
+        $this->save();
     }
 
     /**
@@ -78,13 +103,29 @@ class PluginFile extends Model
      */
     public function getFileSize()
     {
+        // Bytes to Kilobites
         $value = $this->file_size / 1024;
 
+        // Kilobytes to Megabytes
         if ($value > 1024) {
             return number_format($value / 1024, 1) . ' MB';
         }
 
         return number_format($value, 1) . ' KB';
+    }
+
+    /**
+     * Get the public download URL for a plugin file.
+     *
+     * @return string
+     */
+    public function getDownloadLink()
+    {
+        return route('plugins.files.download', [
+            'slug' => $this->plugin->slug,
+            'plugin' => $this->plugin->id,
+            'pluginFile' => $this->id,
+        ]);
     }
 
     /**

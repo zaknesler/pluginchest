@@ -7,7 +7,6 @@ use App\Models\PluginFile;
 use App\Jobs\StorePluginFile;
 use Illuminate\Bus\Queueable;
 use Symfony\Component\Yaml\Yaml;
-use Illuminate\Pipeline\Pipeline;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\InteractsWithQueue;
@@ -55,12 +54,14 @@ class ValidatePluginFile implements ShouldQueue
         $unzipped = $this->unzip();
         $contents = $this->getYamlContents($unzipped);
 
-        $this->checkYamlEntries($contents);
-        $this->checkMainClassExists($unzipped, $contents);
+        if (!is_null($contents)) {
+            $this->checkYamlEntries($contents);
+            $this->checkMainClassExists($unzipped, $contents);
+        }
 
+        $this->file->addValidationErrors($this->errors);
         $this->file->update([
-            'validation_errors' => $this->errors->isEmpty() ? null : $this->errors->toJson(),
-            'validated_at' => $this->errors->isEmpty() ? now() : null,
+            'validated_at' => now(),
         ]);
     }
 
@@ -69,7 +70,7 @@ class ValidatePluginFile implements ShouldQueue
      *
      * @return string
      */
-    private function getWorkingDirectory()
+    private function getFileDirectoryPath()
     {
         return Storage::disk(config('pluginchest.storage.temporary'))
                       ->path($this->file->temporary_file);
@@ -82,7 +83,7 @@ class ValidatePluginFile implements ShouldQueue
      */
     private function getFileFullPath()
     {
-        return join(DIRECTORY_SEPARATOR, [$this->getWorkingDirectory(), $this->file->temporary_file]);
+        return join(DIRECTORY_SEPARATOR, [$this->getFileDirectoryPath(), $this->file->temporary_file]);
     }
 
     /**
@@ -92,11 +93,18 @@ class ValidatePluginFile implements ShouldQueue
      */
     private function unzip()
     {
-        $extractTo = join(DIRECTORY_SEPARATOR, [$this->getWorkingDirectory(), 'unzip']);
+        $extractTo = join(DIRECTORY_SEPARATOR, [$this->getFileDirectoryPath(), 'unzip']);
 
         try {
             $zip = new ZipArchive;
             $zip->open($this->getFileFullPath());
+
+            if ($zip->numFiles == 0) {
+                $this->errors->push('File has no zip contents.');
+
+                return;
+            }
+
             $zip->extractTo($extractTo);
             $zip->close();
         } catch (\Exception $e) {
