@@ -61,7 +61,24 @@ class Plugin extends Model
      */
     public function getUrl()
     {
-        return route('plugins.show', [$this->slug, $this->id]);
+        return route('plugins.show', [
+            $this->slug,
+            $this->id
+        ]);
+    }
+
+    /**
+     * Get the URL to the latest plugin.
+     *
+     * @return string
+     */
+    public function getLatestFileUrl()
+    {
+        return $this->files()
+                    ->public()
+                    ->latest()
+                    ->first()
+                    ->getDownloadUrl();
     }
 
     /**

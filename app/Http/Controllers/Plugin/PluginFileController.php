@@ -24,14 +24,21 @@ class PluginFileController extends Controller
                 'show',
             ],
         ]);
+
+        $this->middleware(function ($request, $next) {
+            // abort_if(is_null($request->plugin->published_at), 404);
+
+            return $next($request);
+        });
     }
 
     /**
-     * Display a listing of the file.
+     * Display a listing of files for a plugin.
      *
+     * @param  \App\Models\Plugin  $plugin
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Plugin $plugin)
     {
         //
     }
@@ -86,21 +93,25 @@ class PluginFileController extends Controller
     /**
      * Display the specified file.
      *
+     * @param  \App\Models\Plugin  $plugin
      * @param  \App\Models\PluginFile  $pluginFile
      * @return \Illuminate\Http\Response
      */
-    public function show(PluginFile $pluginFile)
+    public function show(Plugin $plugin, PluginFile $pluginFile)
     {
-        // Ensure plugin file is approved.
+        abort_unless($pluginFile->isPublic(), 404);
+
+        return view('plugins.files.show', compact('pluginFile'));
     }
 
     /**
      * Show the form for editing the specified file.
      *
+     * @param  \App\Models\Plugin  $plugin
      * @param  \App\Models\PluginFile  $pluginFile
      * @return \Illuminate\Http\Response
      */
-    public function edit(PluginFile $pluginFile)
+    public function edit(Plugin $plugin, PluginFile $pluginFile)
     {
         //
     }
@@ -108,11 +119,12 @@ class PluginFileController extends Controller
     /**
      * Update the specified file in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Plugin  $plugin
      * @param  \App\Models\PluginFile  $pluginFile
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PluginFile $pluginFile)
+    public function update(Plugin $plugin, PluginFile $pluginFile, Request $request)
     {
         //
     }

@@ -29,8 +29,10 @@ Route::middleware(StripPluginSlug::class)->prefix('/plugins/{plugin_slug}/{plugi
     Route::prefix('/files')->group(function () {
         Route::post('/', 'Plugin\PluginFileController@store')->name('plugins.files.store');
         Route::get('/create', 'Plugin\PluginFileController@create')->name('plugins.files.create');
-        Route::delete('/{pluginFile}', 'Plugin\PluginFileController@destroy')->name('plugins.files.destroy');
 
         Route::get('/{pluginFile}/download', 'Plugin\PluginFileDownloadController@show')->name('plugins.files.download');
+
+        Route::get('/{pluginFile}', 'Plugin\PluginFileController@show')->name('plugins.files.show');
+        Route::delete('/{pluginFile}', 'Plugin\PluginFileController@destroy')->name('plugins.files.destroy');
     });
 });

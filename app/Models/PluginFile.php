@@ -68,6 +68,29 @@ class PluginFile extends Model
     }
 
     /**
+     * Scope a query to only include plugin files publicly accessible.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePublic($query)
+    {
+        return $query->hasFile()
+                    ->whereNotNull('approved_at')
+                    ->whereNull('validation_errors');
+    }
+
+    /**
+     * Determine if a plugin file is public.
+     *
+     * @return boolean
+     */
+    public function isPublic()
+    {
+        return (bool) $this->public()->count();
+    }
+
+    /**
      * Temporarily store file and dispatch jobs to validate and store it.
      *
      * @param  \Illuminate\Http\UploadedFile  $file
@@ -118,16 +141,30 @@ class PluginFile extends Model
     }
 
     /**
+     * Get the public URl for a plugin file.
+     *
+     * @return string
+     */
+    public function getUrl()
+    {
+        return route('plugins.files.show', [
+            $this->plugin->slug,
+            $this->plugin->id,
+            $this->id,
+        ]);
+    }
+
+    /**
      * Get the public download URL for a plugin file.
      *
      * @return string
      */
-    public function getDownloadLink()
+    public function getDownloadUrl()
     {
         return route('plugins.files.download', [
-            'slug' => $this->plugin->slug,
-            'plugin' => $this->plugin->id,
-            'pluginFile' => $this->id,
+            $this->plugin->slug,
+            $this->plugin->id,
+            $this->public()->latest()->first()->id,
         ]);
     }
 

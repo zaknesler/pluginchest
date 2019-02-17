@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Plugin;
+use App\Models\PluginFile;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
@@ -25,6 +26,10 @@ class RouteServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
+
+        Route::model('plugin', Plugin::class);
+
+        Route::model('pluginFile', PluginFile::class);
     }
 
     /**

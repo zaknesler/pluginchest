@@ -43,17 +43,23 @@
 
                 <div class="w-full mt-8">
                     <div class="border rounded">
-                        <div class="flex items-baseline justify-between border-b bg-grey-lightest rounded-t text-grey-darker font-semibold px-4 py-3">
-                            <span>Files</span>
+                        <div class="px-4 py-3 flex items-baseline justify-between border-b bg-grey-lightest rounded-t text-grey-darker font-semibold">
+                            <div class="mr-4">Files</div>
 
-                            @can ('createPluginFile', $plugin)
-                                <a
-                                    class="text-xs font-semibold text-grey-darker hover:text-grey-darkest bg-white border hover:border-grey rounded px-3 py-1 no-underline"
-                                    href="{{ route('plugins.files.create', ['slug' => $plugin->slug, 'id' => $plugin->id]) }}"
-                                >
-                                    Add File
-                                </a>
-                            @endcan
+                            <div class="flex items-baseline">
+                                @if ($plugin->files->count())
+                                    <a class="text-xs text-blue-dark hover:text-blue-darkest no-underline" href="{{ $plugin->files->first()->getDownloadUrl() }}">Download Latest</a>
+                                @endif
+
+                                @can ('createPluginFile', $plugin)
+                                    <a
+                                        class="ml-4 text-xs font-semibold text-grey-darker hover:text-grey-darkest bg-white border hover:border-grey rounded px-3 py-1 no-underline"
+                                        href="{{ route('plugins.files.create', ['slug' => $plugin->slug, 'id' => $plugin->id]) }}"
+                                    >
+                                        Add File
+                                    </a>
+                                @endcan
+                            </div>
                         </div>
 
                         <div class="bg-white rounded-b p-4">
@@ -61,10 +67,7 @@
                                 @if ($plugin->files->count())
                                     @foreach ($plugin->files as $file)
                                         <li>
-                                            <span class="font-semibold">{{ $file->name }}</span>
-                                            <span class="text-xs text-grey-dark">
-                                                <a class="no-underline text-blue-dark hover:text-blue-darkest" href="{{ $file->getDownloadLink() }}">Download</a>
-                                            </span>
+                                            <a class="font-semibold no-underline text-grey-darker hover:text-grey-darkest" href="{{ $file->getUrl() }}">{{ $file->name }}</a>
                                         </li>
                                     @endforeach
                                 @else
