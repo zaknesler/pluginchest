@@ -18,6 +18,8 @@ class PluginFileDownloadController extends Controller
      */
     public function show(Plugin $plugin, PluginFile $pluginFile)
     {
+        abort_unless($pluginFile->isPublic(), 404);
+
         $pluginFile->increment('downloads_count');
 
         return Storage::disk(config('pluginchest.storage.validated'))

@@ -27,9 +27,11 @@ class PluginFileDownloadTest extends TestCase
             'plugin_file' => $this->getValidPluginFile(),
         ]);
 
+
         $pluginFile = PluginFile::first();
 
-        $response = $this->get($pluginFile->getDownloadLink());
+        $pluginFile->update(['approved_at' => now()]);
+        $response = $this->get($pluginFile->getDownloadUrl());
 
         $response->assertHeader('content-disposition', 'attachment; filename=TestPlugin.jar');
         $response->assertSuccessful();

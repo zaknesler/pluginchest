@@ -69,8 +69,8 @@ class PluginController extends Controller
             'users',
             'files' => function ($query) {
                 return $query->latest()
-                    ->whereNull('validation_errors')
-                    ->hasFile();
+                    ->public()
+                    ->limit(5);
             }
         ]);
 
