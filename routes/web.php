@@ -33,6 +33,8 @@ Route::middleware(StripPluginSlug::class)->prefix('/plugins/{plugin_slug}/{plugi
         Route::get('/{pluginFile}/download', 'Plugin\PluginFileDownloadController@show')->name('plugins.files.download');
 
         Route::get('/{pluginFile}', 'Plugin\PluginFileController@show')->name('plugins.files.show');
+        Route::get('/{pluginFile}/edit', 'Plugin\PluginFileController@edit')->name('plugins.files.edit');
+        Route::patch('/{pluginFile}', 'Plugin\PluginFileController@update')->name('plugins.files.update');
         Route::delete('/{pluginFile}', 'Plugin\PluginFileController@destroy')->name('plugins.files.destroy');
     });
 });

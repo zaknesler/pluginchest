@@ -113,7 +113,9 @@ class PluginFileController extends Controller
      */
     public function edit(Plugin $plugin, PluginFile $pluginFile)
     {
-        //
+        $this->authorize('update', $pluginFile);
+
+        return view('plugins.files.edit', compact('pluginFile'));
     }
 
     /**
@@ -126,7 +128,16 @@ class PluginFileController extends Controller
      */
     public function update(Plugin $plugin, PluginFile $pluginFile, Request $request)
     {
-        //
+        $this->authorize('update', $pluginFile);
+
+        $pluginFile->update([
+            'name' => request('name'),
+            'description' => request('description'),
+            'stage' => request('stage'),
+            'game_version' => request('game_version'),
+        ]);
+
+        return redirect($plugin->getUrl());
     }
 
     /**

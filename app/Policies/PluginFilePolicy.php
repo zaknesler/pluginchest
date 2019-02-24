@@ -11,6 +11,18 @@ class PluginFilePolicy
     use HandlesAuthorization;
 
     /**
+     * Determine whether the user can update the plugin file.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\PluginFile  $pluginFile
+     * @return mixed
+     */
+    public function update(User $user, PluginFile $pluginFile)
+    {
+        return $pluginFile->plugin->hasUserWithRole($user, 'owner');
+    }
+
+    /**
      * Determine whether the user can delete the plugin file.
      *
      * @param  \App\Models\User  $user
