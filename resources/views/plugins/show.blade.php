@@ -48,26 +48,32 @@
 
                             <div class="flex items-baseline">
                                 @if ($plugin->files->count())
-                                    <a class="text-xs text-blue-dark hover:text-blue-darkest no-underline" href="{{ $plugin->files->first()->getDownloadUrl() }}">Download Latest</a>
+                                    <a class="px-2 py-1 text-xs bg-blue hover:bg-blue-dark text-white hover:text-blue-lightest rounded no-underline" href="{{ $plugin->files->first()->getDownloadUrl() }}">Download Latest</a>
                                 @endif
-
-                                @can ('createPluginFile', $plugin)
-                                    <a
-                                        class="ml-4 text-xs font-semibold text-grey-darker hover:text-grey-darkest bg-white border hover:border-grey rounded px-3 py-1 no-underline"
-                                        href="{{ route('plugins.files.create', ['slug' => $plugin->slug, 'id' => $plugin->id]) }}"
-                                    >
-                                        Add File
-                                    </a>
-                                @endcan
                             </div>
                         </div>
 
                         <div class="bg-white rounded-b p-4">
-                            <ul class="list-reset">
+                            @can ('createPluginFile', $plugin)
+                                <div class="mb-4">
+                                    <a
+                                        class="text-xs font-semibold text-grey-darker hover:text-grey-darkest bg-white border hover:border-grey rounded px-3 py-1 no-underline"
+                                        href="{{ route('plugins.files.create', ['slug' => $plugin->slug, 'id' => $plugin->id]) }}"
+                                    >
+                                        Add File
+                                    </a>
+                                </div>
+                            @endcan
+
+                            <ul class="-mb-3 list-reset">
                                 @if ($plugin->files->count())
                                     @foreach ($plugin->files as $file)
-                                        <li>
+                                        <li class="mb-3">
                                             <a class="font-semibold no-underline text-grey-darker hover:text-grey-darkest" href="{{ $file->getUrl() }}">{{ $file->name }}</a>
+
+                                            <div class="text-grey-dark text-xs">
+                                                {{ $file->downloads_count . ' ' . str_plural('download', $file->downloads_count) }}
+                                            </div>
                                         </li>
                                     @endforeach
                                 @else

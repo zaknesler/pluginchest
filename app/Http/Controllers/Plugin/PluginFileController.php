@@ -137,7 +137,7 @@ class PluginFileController extends Controller
             'game_version' => request('game_version'),
         ]);
 
-        return redirect($plugin->getUrl());
+        return redirect($pluginFile->getUrl());
     }
 
     /**

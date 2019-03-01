@@ -8,7 +8,13 @@
         <div class="mb-4 flex items-baseline justify-between">
             <a class="inline-block text-blue-dark hover:text-blue-darkest no-underline" href="{{ $pluginFile->plugin->getUrl() }}">&larr; View Plugin</a>
 
-            <a class="px-4 py-2 rounded inline-block bg-blue hover:bg-blue-dark text-white font-semibold text-sm no-underline" href="{{ $pluginFile->getDownloadUrl() }}">Download</a>
+            <div class="flex items-baseline">
+                <div class="mr-4 text-sm">
+                    {{ $pluginFile->downloads_count . ' ' . str_plural('download', $pluginFile->downloads_count) }}
+                </div>
+
+                <a class="px-4 py-2 rounded inline-block bg-blue hover:bg-blue-dark text-white font-semibold text-sm no-underline" href="{{ $pluginFile->getDownloadUrl() }}">Download</a>
+            </div>
         </div>
 
         <div class="border rounded">

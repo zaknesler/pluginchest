@@ -85,6 +85,14 @@
                             </div>
                         </div>
 
+                        <div class="mb-6">
+                            <label class="inline-block mb-2 font-semibold text-grey-darker" for="description">File</label>
+
+                            <div class="p-3 text-sm bg-grey-lightest border rounded">
+                                For security reasons, you are unable to upload a different file. If you wish, you can delete this file and re-upload a different one.
+                            </div>
+                        </div>
+
                         <div class="block">
                             <input class="appearance-none w-auto border-0 bg-blue hover:bg-blue-dark text-white rounded cursor-pointer py-3 px-6" type="submit" value="Update" />
                         </div>
